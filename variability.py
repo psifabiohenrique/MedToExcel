@@ -8,6 +8,19 @@ from src.Switches import n_mudancas
 
 class Variability(QWidget):
     def __init__(self):
+        """
+        Initializes the class object.
+
+        This function sets up the layout of the class object using a QVBoxLayout.
+        It also initializes several GroupFunctionality objects for different functionalities.
+        Each GroupFunctionality object is connected to a button click event to perform a specific action.
+
+        Parameters:
+            self: The instance of the class.
+
+        Returns:
+            None
+        """
         super().__init__()
         self.layout = QVBoxLayout(self)
 
