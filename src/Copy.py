@@ -1,7 +1,7 @@
 from PySide6.QtGui import QClipboard
 
 
-def calc(archive, sieve, columnOrRow, virgula):
+def calc_row(archive, sieve, columnOrRow, virgula):
     clipboard = QClipboard()
     sieve_list = []
     row_data = {
@@ -70,7 +70,8 @@ def calc(archive, sieve, columnOrRow, virgula):
             if virgula:
                 i = i.replace('.', ',')
             temp += f'\t{str(i)}'
-        clipboard.setText(temp)
+        result = temp
+        # clipboard.setText(temp)
         # copy(temp)
     else:
         if columnOrRow == True:
@@ -82,17 +83,19 @@ def calc(archive, sieve, columnOrRow, virgula):
                 temp += f'\t{str(i)}'
             result = temp
             # copy(result)
-            clipboard.setText(result)
+            # clipboard.setText(result)
         else:
             temp = str(row_data['date'])
             for i in data:
                 temp += f'\n{str(i)}'
             result = temp
             # copy(result)
-            clipboard.setText(result)
+            # clipboard.setText(result)
     
 
     # Resetando todas as variáveis
+    archive.seek(0)
+    sieve.seek(0)
     sieve_list = []
     row_data = {
         'A:': [], 'B:': [], 'C:': [], 'D:': [],
@@ -105,4 +108,15 @@ def calc(archive, sieve, columnOrRow, virgula):
     index_list = 'A:', 'B:', 'C:', 'D:', 'E:', 'F:', 'G:', 'H:', 'I:', 'J:', 'K:', 'L:', 'M:', 'N:', 'O:', 'P:', 'Q:', 'R:', 'S:', 'T:', 'U:', 'V:', 'X:', 'Y:', 'W:', 'Z:' 
     index_list_number = ['0:', '5:', '10:', '15:', '20:', '25:', '30:', '35:', '40:', '45:', '50:', '55:', '60:', '65:', '70:', '75:', '80:', '85:', '90:', '95:', '100:', '105:', '110:', '115:', '120:', '125:', '130:', '135:', '140:', '145:', '150:', '155:', '160:', '165:', '170:', '175:', '180:', '185:', '190:', '195:', '200:', '205:', '210:', '215:', '220:', '225:', '230:', '235:', '240:', '245:', '250:', '255:', '260:', '265:', '270:', '275:', '280:', '285:', '290:', '295:']
     index_match = ''
-    return 'Copied'
+    return result
+
+def calc(archive, sieve, columnOrRow, virgula):
+    clipboard = QClipboard()
+    data = calc_row(archive, sieve, columnOrRow, virgula)
+    
+    try:
+        clipboard.setText(data)
+        return "Done"
+    except:
+        return "Error"
+    

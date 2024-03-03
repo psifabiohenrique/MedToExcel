@@ -30,7 +30,7 @@ def remover_zeros(lista_seq:list[str]):
     
 
 def calcular_recorrencia(string, virgula):
-    clippboard = QClipboard
+    clippboard = QClipboard()
     dados_brutos = string.split()
     universo = ['1111', '1112', '1121', '1122', '1211', '1212', '1221', '1222', '2222', '2221', '2212', '2211', '2122', '2121', '2112', '2111']
     if '.' in string or ',' in string:
@@ -55,7 +55,9 @@ def calcular_recorrencia(string, virgula):
                     contador = 0
         primeira = True
     print(valores)
-    resultado = f"{mean(valores)} \t{median(valores)}"
+    mean_value = mean(valores)
+    median_value = median(valores)
+    resultado = f"{mean_value}\t{median_value}"
 
     if virgula:
         resultado = resultado.replace('.', ',')

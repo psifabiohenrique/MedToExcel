@@ -1,0 +1,381 @@
+\ Projeto PIBIC (Unidade Comportamental) 290204
+\ Cx5-REP3-FR4-SEQ (tempo)
+\ LC apagada e luzes das barras 3E e 6D acesas
+\ Rep 3: sequncia deve ser igual a, no mnimo, 1, e no mximo, 2 das 3 ltimas sequncias
+\ FR 4: o reforo ser liberado aps a 4 sequncia que atenda o critrio Rep
+\ Sequncia reforada (atende Rep + FR) ---> Luz piscando (Sr) + Leite condensado (SR)
+\ Sequncia correta (atende Rep) ---> Luz piscando (Sr)
+\ Sequncia incorreta (no atende Rep e nem  FR) ---> Todas as luzes apagadas
+\ Durao do Sr e BO = 2 s
+\ Durao do SR = 5 s
+\ Intervalo entre respostas intrassequncia (IRT) = 0,3 s
+\ Nmero de mudanas intrassequncia: 0 (2 seq), 1 (4 seq), 2 (2 seq)
+\ Durao da sesso: 50 reforos ou 3000 min
+\ Tempo de resposta: tempo entre a primeira e a ltima resposta da sequncia (Schwartz (1982)
+\ Latncia: tempo entre o incio da tentativa e a primeira resposta (Schwartz (1982)
+
+\ Outputs
+^L1E = 1  \ luz barra 1 (esquerda)
+^L2E = 2  \ luz barra 2 (esquerda) 
+^L3E = 3  \ luz barra 3 (esquerda - prxima ao bebedouro) 
+^L4D = 4  \ luz barra 4 (direita) 
+^L5D = 5  \ luz barra 5 (direita) 
+^L6D = 6  \ luz barra 6 (direita - prxima ao bebedouro)
+^LC = 7   \ luz da caixa
+^BB = 8   \ bebedouro 
+
+\ Inputs 
+\ R1 (Z1) = resposta barra 1 (esquerda)
+\ R2 (Z2) = resposta barra 2 (esquerda) 
+\ R3 (Z3) = resposta barra 3 (esquerda - prxima ao bebedouro) 
+\ R4 (Z4) = resposta barra 4 (direita)
+\ R5 (Z5) = resposta barra 5 (direita)
+\ R6 (Z6) = resposta barra 6 (direita - prxima ao bebedouro)
+
+DIM A = 1197 
+\ A(H) / C(35) (.01")
+\ 001: Tempo entre incio da tentativa (aps incio sesso ou final SR, Sr ou BO) e 1 resposta (LATNCIA)
+\ 002: Tempo entre 1 resposta e 2 resposta
+\ 003: Tempo entre 2 resposta e 3 resposta
+
+DIM D = 399 
+\ D(I) / C(36) (.01"): Tempo entre 1 resposta e 3 resposta  (TEMPO DE RESPOSTA=Durao da sequncia)
+
+DIM U = 399 
+\ U(J) / C(37) (.01"): Tempo entre incio da tentativa e 3 resposta (LATNCIA + TEMPO DE RESPOSTA)
+
+DIM N = 199
+\ N(O) / C(40) (1"): Intervalo entre reforos primrios (SRs) - IRI 
+
+DIM K = 199
+\ K(P) / C(41): Nmero de sequncias em cada IRI
+
+DIM B = 3
+\ B(L): Cada resposta na sequncia 
+
+DIM F = 399
+\ F(G): Todas as sequncias da sesso em ordem de ocorrncia
+
+DIM E = 399
+\ E(S) = 1 (SR)
+\ E(S) = 2 (Sr)
+\ E(S) = 3 (BO)
+\ Sequncias reforadas, corretas e incorretas na ordem de ocorrncia
+
+DIM M = 44
+\ Frequncia ABSOLUTA de cada uma das 8 sequncias possveis 
+\ M(0) ---> M(19)
+\ Frequncia RELATIVA de cada uma das 8 sequncias possveis 
+\ M(25) ---> M(44)
+
+DIM T = 3
+\ ltimas 3 sequncias 
+
+DIM V = 2
+\ V(1) = Nmero de respostas na sequncia (reseta)
+
+\ Z = p(SR) 
+
+DIM C = 64 
+\ C(3):  Total de respostas na barra 3E  
+\ C(6):  Total de respostas na barra 6D
+\ C(7):  Respostas durante o SR
+\ C(8):  Respostas durante o Sr
+\ C(9):  Respostas durante o BO
+\ C(10): Total de respostas nas barras 3E e 6D (exclui respostas durante SR, Sr e BO)
+\ C(11): Taxa de respostas (3E+6D) (exclui respostas durante SR, Sr e BO)
+\ C(12): Total de respostas nas barras 3E e 6D (inclui respostas durante o SR, Sr e BO)
+\ C(13): Total de sequncias
+\ C(14): Taxa de sequncias 
+\ C(15): Nmero de sequncias reforadas (=No de SRs: luz piscando + leite condensado)
+\ C(16): Porcentagem de sequncias reforadas [=p(SR)]
+\ C(17): Taxa de SR (min) 
+\ C(20): Nmero de sequncias corretas (=No de Srs: luz piscando) 
+\ C(21): Porcentagem de sequncias corretas [=p(Sr)]
+\ C(22): Taxa de Sr (min) 
+\ C(25): Nmero de sequncias incorretas  (BO: todas as luzes apagadas)
+\ C(26): Porcentagem de sequncias incorretas
+\ C(27): Taxa de BO (min)
+\ C(30): Durao da sesso (1") (exclui Sr, SR e BO)
+\ C(31): Durao total da sesso (1") (inclui Sr, SR e BO)
+\ C(34): Nmero de sequncias da razo (reseta)
+\ C(35)+.001: Tempo entre incio da tentativa e 1 resposta 
+\ C(35)+.002: Tempo entre 1 resposta e 2 resposta 
+\ C(35)+.003: Tempo entre 2 resposta e 3 resposta 
+\ C(36): Tempo entre 1 resposta e 3 resposta
+\ C(37): Tempo entre incio da tentativa e 3 resposta
+\ C(40): Intervalo entre reforos primrios (SRs) - IRI
+\ C(41): Nmero de sequncias em cada IRI
+
+\ Mudanas intrassequncia 
+\ C(50): Frequncia absoluta de sequncias com 0 mudanas		
+\ C(51): Frequncia absoluta de sequncias com 1 mudanas		
+\ C(52): Frequncia absoluta de sequncias com 2 mudanas		
+
+\ C(55): Frequncia relativa de sequncias com 0 mudanas		
+\ C(56): Frequncia relativa de sequncias com 1 mudanas		
+\ C(57): Frequncia relativa de sequncias com 2 mudanas		
+
+\ List of SHOW
+\ 1-4:ltimas 4 sequncias(Rep3)
+\ 10: Total de sequncias
+\ 11: Sr (Luz piscando)
+\ 12: SR (Luz piscando + Leite condensado)
+\ 13: BO
+\ 16: Durao da sesso (exclui Sr, SR e BO)
+\ 17: Durao total da sesso (inclui Sr, SR e BO)
+\ 21: Respostas durante o SR
+\ 22: Respostas durante o Sr
+\ 23: Respostas durante o BO
+\ 24: Respostas durante o IRT
+\ 25: Total de respostas (inclui respostas durante SR, Sr e BO)
+\ 26: Tempo entre incio da tentativa e 1 resposta
+\ 27: Tempo entre 1 resposta e 2 resposta
+\ 28: Tempo entre 2 resposta e 3 resposta
+\ 29: Tempo entre 1 resposta e 3 resposta
+\ 30: Tempo entre incio da tentativa e 3 resposta
+\ 31: Intervalo entre reforos primrios (SRs) - IRI
+\ 32: Nmero de sequncias em cada IRI
+
+\ List of Z pulses
+\ Z1: Respostas na barra 1E
+\ Z2: Respostas na barra 2E
+\ Z3: Respostas na barra 3E
+\ Z4: Respostas na barra 4D
+\ Z5: Respostas na barra 5D
+\ Z6: Respostas na barra 6D
+\ Z16: Sequncias de 3 respostas foi completada
+\ Z17: Sequncia atual foi registrada
+\ Z18: Incio do SR 
+\ Z19: Incio do Sr 
+\ Z20: Final do SR
+\ Z21: Final do Sr
+\ Z22: Final do BO
+\ Z23: Aps Sr, SR ou BO (incio de uma nova sequncia)
+\ Z24: Incio do BO
+\ Z25: 1 resposta da sequncia
+
+
+S.S.1,                          \Teste da caixa
+S1,
+.1": On ^LC, ^L3E ---> S2
+S2,
+#R3: Off ^L3E; On ^L6D ---> S3
+S3,
+#R6: Off ^L6D; On ^BB---> S4
+S4,
+3": Off ^BB, ^LC ---> S5
+S5,
+.01": ---> SX
+
+S.S.2,                   \ Intervalo de 0,3" entre respostas
+S1,
+#Start: ---> S2
+S2,
+#R3: Z3 ---> S3
+#R6: Z6 ---> S3
+S3,
+.3": ---> S2             
+
+S.S.3,                 \ Contadores de respostas (exclui respostas durante SR, Sr e BO)
+S1,
+#Start: ---> S2
+S2,
+#Z3: ADD C(3); Add C(10) ---> SX		
+#Z6: ADD C(6); Add C(10) ---> SX
+#Z18!#Z19!#Z24: ---> S3
+S3,
+#Z20!#Z21!#Z22: ---> S2
+
+S.S.4,	              \ Ocorrncia de uma sequncia (luz da caixa apagada e luzes das barras acesas)
+S1,
+#Start: On ^L3E, ^L6D ---> S2                         \ 1a resposta da sequncia
+S2,
+.01": ADD C(35), C(37) ---> SX
+#Z3: SET B(L)=3; ADD L; Off  ^L3E, ^L6D; Set A(H)=C(35)+.001; ADD H; Show 26, Tempo 1aR, C(35) ---> S3
+#Z6: SET B(L)=6; ADD L; Off  ^L3E, ^L6D; Set A(H)=C(35)+.001; ADD H; Show 26, Tempo 1aR, C(35) ---> S3
+
+S3,
+.1": On ^L3E, ^L6D; SET C(35)=0 ---> S4         \ 2a resposta da sequncia
+S4,
+.01": ADD C(35), C(36), C(37) ---> SX
+#Z3: SET B(L)=3; ADD L; Off  ^L3E, ^L6D; Set A(H)=C(35)+.002; ADD H; Show 27, Tempo 1a-2aR, C(35) ---> S5
+#Z6: SET B(L)=6; ADD L; Off  ^L3E, ^L6D; Set A(H)=C(35)+.002; ADD H; Show 27, Tempo 1a-2aR, C(35) ---> S5
+S5,
+.1": On ^L3E, ^L6D; SET C(35)=0 ---> S6          \ 3a resposta da sequncia
+S6,
+.01": ADD C(35), C(36), C(37) ---> SX
+#Z3: SET B(L)=3; Off ^L3E, ^L6D; Set A(H)=C(35)+.003; Set D(I)=C(36); SET U(J)=C(37); ADD H, I, J; 
+      Show 28, Tempo 2a-3aR, C(35); Show 29, Tempo 1a-3aR, C(36); Show 30, Tempo Incio-3aR, C(37); Z16 ---> S7
+#Z6: SET B(L)=6; Off ^L3E, ^L6D; Set A(H)=C(35)+.003; Set D(I)=C(36); SET U(J)=C(37); ADD H, I, J; 
+      Show 28, Tempo 2a-3aR, C(35); Show 29, Tempo 1a-3aR, C(36); Show 30, Tempo Incio-3aR, C(37); Z16 ---> S7
+S7,
+#Z17: SET C(35)=0, C(36)=0, C(37)=0 ---> S8
+S8,
+#Z23: ADD G; On ^L3E, ^L6D ---> S2
+
+S.S.5,           \ Registro da sequncia 
+S1,
+#Z16: If (B(0)=3) And (B(1)=3) And (B(2)=3) [@333, @False]
+          @333: Set F(G)=333, L=0, M(0)=333; Add M(1), C(50) ---> S9
+          @False: ---> S2
+S2,
+.01": If (B(0)=3) And (B(1)=3) And (B(2)=6) [@336, @False]
+         @336: Set F(G)=336, L=0, M(2)=336; Add M(3), C(51) ---> S9
+         @False: ---> S3
+S3,
+.01": If (B(0)=3) And (B(1)=6) And (B(2)=3) [@363, @False]
+         @363: Set F(G)=363, L=0, M(5)=363; Add M(6), C(52) ---> S9
+         @False: ---> S4
+S4,
+.01": If (B(0)=3) And (B(1)=6) And (B(2)=6) [@366, @False]
+         @366: Set F(G)=366, L=0, M(7)=366; Add M(8), C(51) ---> S9
+         @False: ---> S5
+S5,
+.01": If (B(0)=6) And (B(1)=6) And (B(2)=6) [@666, @False]
+         @666: Set F(G)=666, L=0, M(10)=666; Add M(11), C(50) ---> S9
+         @False: ---> S6
+S6,
+.01": If (B(0)=6) And (B(1)=6) And (B(2)=3) [@663, @False]
+         @663: Set F(G)=663, L=0, M(12)=663; Add M(13), C(51) ---> S9
+         @False: ---> S7
+S7,
+.01": If (B(0)=6) And (B(1)=3) And (B(2)=6) [@636, @False] 
+         @636: Set F(G)=636, L=0, M(15)=636; Add M(16), C(52) ---> S9
+         @False: ---> S8
+S8,
+.01": If (B(0)=6) And (B(1)=3) And (B(2)=3) [@633]
+         @633: Set F(G)=633, L=0, M(17)=633; Add M(18), C(51) ---> S9
+S9,
+.01": Z17 ---> S1
+
+S.S.6,               \ Liberao de Sr, SR e BO 
+S1,
+#Z17: If (F(G) = 333) Or (F(G) = 666) [@Yes, @No] 
+          @Yes: Z24 ---> S5				                     	
+          @No: If (F(G)=T(0)) Or (F(G)=T(1)) Or (F(G)=T(2)) [@Yes, @No]
+               @Yes: ---> S2                                              
+               @No: Z24 ---> S5
+S2, 
+.01": ADD C(34); If C(34) = 4 [@Sim, @Nao]	                  \ Checando o esquema FR
+                 @Sim: WithPI = Z [@SR, @NoSR]   
+          	       @SR: On ^BB;  Set C(34)=0; Z18 ---> S3     \ Seq reforada: Incio SR
+         	       @NoSR: Z19 ---> S4		          \ Seq atende Rep e FR, mas no atende p)
+	         @Nao: Z19 ---> S4			              
+S3,
+5": Off ^BB; SET E(S) = 1; ADD S; Z20 ---> S6		           \ Final SR
+#Z3!#Z6: Add C(7); Show  21, Resp-SR, C(7) ---> SX 
+S4,
+2": SET E(S) = 2; ADD S; Z21 ---> S6			           \ Final Sr	
+#Z3!#Z6: Add C(8); Show  22, Resp-Sr, C(8) ---> SX
+S5,
+2": SET E(S) = 3; ADD S; Z22 ---> S6			           \ Final BO                                       
+#Z3!#Z6: Add C(9); Show  23, Resp-BO, C(9) ---> SX
+S6,
+.01": SET T(2)=T(1), T(1)=T(0), T(0)=F(G); Z23 ---> S1
+
+S.S.7,               \ Durao do intervalo entre SRs (IRI)
+S1,
+#Start: ---> S2
+S2,
+1":  ADD C(40); Show 31, IRI, C(40) ---> SX
+#Z18: SET N(O)=C(40) ---> S3
+S3,
+#Z20: SET C(40)=0; ADD O ---> S2
+
+S.S.8,                \ Nmero de sequncias durante o IRI
+S1,
+#Start: ---> S2
+S2,
+#Z16: ADD C(41); Show 32, Seq-IRI, C(41) ---> SX
+#Z18: SET K(P)=C(41); ADD P ---> S3
+S3,
+#Z23: SET C(41)=0 ---> S2
+ 
+
+S.S.9,                \ Reforo condicionado (Sr): Luz da caixa piscando
+S1,
+#Z18!#Z19: ---> S2
+S2,
+.3": On ^LC ---> S3
+#Z20!#Z21: ---> S1
+S3,
+.3": Off ^LC ---> S2
+#Z20!#Z21: ---> S1
+
+S.S.10,		\ Show das 4 ltimas sequncias 
+S1,
+#Z17: Show 4, S4, F(G); Show 3, S3, T(0); Show 2, S2, T(1); Show 1, S1, T(2) ---> SX
+#Z20!#Z21!#Z22: ---> S1
+
+S.S.11,		\ Nmero de sequncias, SRs, Srs e BOs
+S1,	
+#Z3!#Z6: Add C(12); Show 25, TotResp, C(12) ---> SX   \ inclui respostas durante SR, Sr e BO 
+#Z20: ADD C(15); Show 12, SR, C(15) ---> SX
+#Z21: ADD C(20); Show 11, Sr, C(20) ---> SX
+#Z22: ADD C(25); Show 13, BO, C(25) ---> SX
+#Z16: ADD C(13); Show 10, TotSeq, C(13) ---> SX 
+#Z23: ---> S1
+
+S.S.12, 		\ Durao da sesso (exclui SR, Sr e BO)
+S1,
+#Start: ---> S2
+S2,
+1": ADD C(30); Show 16, DurSes, C(30) ---> SX
+#Z16: ---> S3
+S3,
+#Z23: ---> S2
+
+S.S.13,                 \ Durao total da sesso (inclui SR, Sr e BO)
+S1,
+#Start: ---> S2
+S2,
+1": ADD C(31); Show 17, DurTotSes, C(31) ---> SX
+
+S.S.14, 		\ Final da sesso
+S1,
+#Start: ---> S2
+S2,
+.01": IF C(15)=50 [@True, @False]
+        @True: ---> S3
+        @False: If C(31)>=3000[@Yes, @No]
+                       @Yes: ---> S3
+                       @No: ---> S2
+S3,
+.01": SET C(11)=C(10)/C(30); SET C(11)=C(11)*60 ---> S4
+\ Taxa de respostas (min) (exclui respostas durante o SR, Sr e BO)
+S4,
+01": SET C(14)=C(13)/C(30); SET C(14)=C(14)*60 ---> S5
+\ Taxa de sequncias (min)
+S5,
+.01": SET C(16)=C(15)/C(13); SET C(16)=C(16)*100 ---> S6
+\ Porcentagem de sequncias reforadas (SR)
+S6,
+.01": SET C(17)=C(15)/C(30); SET C(17)=C(17)*60 ---> S7
+\ Taxa de SR (min)
+S7,
+.01": SET C(21)=C(20)/C(13); SET C(21)=C(21)*100 ---> S8
+\ Porcentagem de sequncias corretas (Sr)
+S8,
+.01": SET C(22)=C(20)/C(30); SET C(22)=C(22)*60 ---> S9
+\ Taxa de Sr (min)
+S9,
+.01": SET C(26)=C(25)/C(13); SET C(26)=C(26)*100 ---> S10
+\ Porcentagem de sequncias incorretas (BO)
+S10,
+01": SET C(27)=C(25)/C(30); SET C(27)=C(27)*60 ---> S11
+\ Taxa de blecautes (BO)
+S11,
+.01": SET M(25)=333, M(26)=(M(1)/C(13));  SET M(27)=336, M(28)=(M(3)/C(13)); 
+      SET M(30)=363, M(31)=(M(6)/C(13));  SET M(32)=366, M(33)=(M(8)/C(13));
+      SET M(35)=666, M(36)=(M(11)/C(13)); SET M(37)=663, M(38)=(M(13)/C(13)); 
+      SET M(40)=636, M(41)=(M(16)/C(13)); SET M(42)=633, M(43)=(M(18)/C(13)) ---> S12
+      \ Frequncia relativa de cada sequncia 
+S12,
+.01": SET C(55)=C(50)/C(13); SET C(55)=C(55)*100;
+      SET C(56)=C(51)/C(13); SET C(56)=C(56)*100;
+      SET C(57)=C(52)/C(13); SET C(57)=C(57)*100 ---> S13
+      \ Frequncia relativa de sequncias com 0, 1 e 2 mudanas	          
+S13,
+.01": ---> STOPABORTFLUSH
+

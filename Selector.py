@@ -1,4 +1,5 @@
 from PySide6.QtWidgets import QWidget, QPushButton, QLabel, QHBoxLayout, QFileDialog
+import os
 
 
 class Selector(QWidget):
@@ -21,7 +22,7 @@ class Selector(QWidget):
     def open_dialog(self):
         window = QWidget()
 
-        file_path, _ = QFileDialog.getOpenFileName(window, 'Open file', '/home')
+        file_path, _ = QFileDialog.getOpenFileName(window, 'Open file', './')
 
         window.show()
         return file_path

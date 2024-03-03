@@ -29,8 +29,9 @@ def calcular_valorU(string, virgula):
     for i in lista:
         acumulador += i
     valor_u = acumulador * -1
+    valor_u = str(valor_u)
     if virgula:
-        valor_u = str(valor_u).replace('.', ',')
+        valor_u = valor_u.replace('.', ',')
 
     try:
         clipboard.setText(valor_u)

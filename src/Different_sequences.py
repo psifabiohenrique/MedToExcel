@@ -15,7 +15,7 @@ def calcular_NSeq(string):
     conjunto = set(dados_brutos)
         
     try:
-        cb.setText(len(conjunto))
+        cb.setText(str(len(conjunto)))
         return 'Copiado'
     except:
         return 'Falha'
