@@ -1,4 +1,6 @@
 from PySide6.QtWidgets import QMainWindow, QPushButton, QWidget, QHBoxLayout, QVBoxLayout
+import os
+
 from med_to_excel import MedToExcel
 from variability import Variability
 from FAP_analysis import FAP_analysis
@@ -10,6 +12,7 @@ class MainWindow(QMainWindow):
         Initializes the class instance.
         """
         super().__init__()
+        self.check_files()
         self.set_initial()
         self.layout.addWidget(self.med_to_excel)
 
@@ -62,3 +65,22 @@ class MainWindow(QMainWindow):
     def set_fap_analysis(self):
         self.set_initial()
         self.layout.addWidget(self.fap_analysis)
+
+    def check_files(self):
+        dir_exists = os.path.exists("./src")
+        consequences_exists = os.path.exists("./src/consequences.txt")
+        latency_exists = os.path.exists("./src/latency.txt")
+        duration_exists = os.path.exists("./src/duration.txt")
+
+        if dir_exists and consequences_exists and latency_exists and duration_exists:
+            return "Archives Checked"
+        else:
+            if not dir_exists:
+                os.mkdir("./src")
+            with open("./src/consequences.txt", "w") as f:
+                f.write("E-FULL")
+            with open("./src/latency.txt", "w") as f:
+                f.write("A-FULL")
+            with open("./src/duration.txt", "w") as f:
+                f.write("D-FULL")
+            return "Archives Created"
