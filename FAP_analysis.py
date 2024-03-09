@@ -73,13 +73,13 @@ class Latency_duration(QWidget):
         self.button.clicked.connect(self.calculate_primary)
         self.layout.addWidget(self.button, 3, 0)
 
-        self.button = QPushButton("Separate each secondary reinforcement")
-        self.button.clicked.connect(self.calculate_secondary)
-        self.layout.addWidget(self.button, 3, 1)
+        # self.button = QPushButton("Separate each secondary reinforcement")
+        # self.button.clicked.connect(self.calculate_secondary)
+        # self.layout.addWidget(self.button, 3, 1)
 
 
         self.checkbox = QCheckBox("Use Comma")
-        self.layout.addWidget(self.checkbox, 2, 1)
+        self.layout.addWidget(self.checkbox, 2, 0)
 
     def calculate_primary(self):
         comma = self.checkbox.isChecked()

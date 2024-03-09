@@ -8,7 +8,7 @@ def calc_primary_duration(time_data, consequences_data, comma):
     row_time_data = clear_data(time_data)
     row_consequences_data = clear_data(consequences_data)
 
-    reinforce_number = 1
+    reinforce_number = 0
     result = {}
 
     temp = []
@@ -26,48 +26,13 @@ def calc_primary_duration(time_data, consequences_data, comma):
         if row_consequences_data[i][0] == '1':
             reinforce_number += 1
     
-
-    # for k in result.keys():
-    #     result_string += f"{k}:"
-    #     result_string += f"\t Média:\t{sum(result[k])/len(result[k])}\tSoma:\t{sum(result[k])} \tDurações individuais:"
-    #     for i in result[k]:
-    #         result_string += f"\t{i}"
-    #     result_string += "\r"
-
-    last_reinforce = 1
-    result_string = 'TEMPO DA RESPOSTA CORRETA (Tempo entre início da tentativa e a resposta correta)\r\r'
-
-    for block in range(5):
-        """Separating five blocks of ten reinforcements"""
-        result_string += f"Bloco {block + 1}:\t1ª sequência\t 2ª sequência\t 3ª sequência \t 4ª sequência \t--> continua\r"
-
-        list_duration = []
-        reinforce_per_block = 0
-
-        for reinforce in range(10):
-            result_string += f"{last_reinforce}° SR:\t"
-            mean_block_duration = 0
-
-            if f"Reforço: {last_reinforce}" in result.keys():
-                for i in result[f"Reforço: {last_reinforce}"]:
-                    list_duration.append(i)
-                    mean_block_duration += i
-
-                    result_string += f"{i}\t"
-                
-                mean_duration = mean_block_duration / len(result[f"Reforço: {last_reinforce}"])
-                result_string += f"\tMédia:\t{mean_duration}\t"
-                reinforce_per_block += 1
-            
-            result_string += "\r"
-            last_reinforce += 1
-        
-        try:
-            result_string += f"Média:\t{sum(list_duration) / reinforce_per_block}\r\r"
-        except:
-            result_string += f"Média:\t0\r\r"
-            
-            
+    result_string = 'Tabela duração por reforço: \r'
+    for k in result.keys():
+        result_string += f"{k}:"
+        result_string += f"\t Média:\t{sum(result[k])/len(result[k])}\tSoma:\t{sum(result[k])} \tDurações individuais:"
+        for i in result[k]:
+            result_string += f"\t{i}"
+        result_string += "\r"
 
     if comma:
         result_string = result_string.replace('.', ',')
