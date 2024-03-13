@@ -3,7 +3,7 @@ from PySide6.QtGui import QClipboard
 from src.Recorrence import remover_data
 
 
-def calc_primary_duration(time_data, consequences_data, comma):
+def calc_primary_trial_duration(time_data, consequences_data, comma):
     cb = QClipboard()
     row_time_data = clear_data(time_data)
     row_consequences_data = clear_data(consequences_data)
@@ -35,7 +35,7 @@ def calc_primary_duration(time_data, consequences_data, comma):
     #     result_string += "\r"
 
     last_reinforce = 1
-    result_string = 'TEMPO DE RESPOSTA = DURAÇÂO DA SEQUÊNCIA (tempo entre 1a e 3a respostas da sequência)\r\r'
+    result_string = 'LATÊNCIA + TEMPO DE RESPOSTA = Duração da tentativa (início da tentativa até 3a resposta; exclui duração da consequência: SR, Sr ou BO)\r\r'
 
     for block in range(5):
         """Separating five blocks of ten reinforcements"""
@@ -56,6 +56,8 @@ def calc_primary_duration(time_data, consequences_data, comma):
                     result_string += f"{i}\t"
                 
                 mean_duration = mean_block_duration / len(result[f"Reforço: {last_reinforce}"])
+
+                result_string += f"\tSoma=IRI:\t{mean_block_duration}\t"
                 result_string += f"\tMédia:\t{mean_duration}\t"
                 reinforce_per_block += 1
             
