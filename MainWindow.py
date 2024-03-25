@@ -71,8 +71,9 @@ class MainWindow(QMainWindow):
         consequences_exists = os.path.exists("./src/consequences.txt")
         latency_exists = os.path.exists("./src/latency.txt")
         duration_exists = os.path.exists("./src/duration.txt")
+        trial_duration = os.path.exists("./src/trial_duration.txt")
 
-        if dir_exists and consequences_exists and latency_exists and duration_exists:
+        if dir_exists and consequences_exists and latency_exists and duration_exists and trial_duration:
             return "Archives Checked"
         else:
             if not dir_exists:
@@ -83,4 +84,6 @@ class MainWindow(QMainWindow):
                 f.write("A-FULL")
             with open("./src/duration.txt", "w") as f:
                 f.write("D-FULL")
+            with open("./src/trial_duration.txt", "w") as f:
+                f.write("U-FULL")
             return "Archives Created"

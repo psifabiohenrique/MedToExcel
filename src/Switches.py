@@ -3,7 +3,7 @@ from src.Recorrence import remover_ponto_virgula, remover_data, remover_zeros
 
 
 
-def n_mudancas(string):
+def n_mudancas(string, comma=True):
     cb = QClipboard()
     dados_brutos = string.split()
     if '.' in string or ',' in string:
@@ -24,7 +24,7 @@ def n_mudancas(string):
                 n_mud += 1
         lista_dados.append(n_mud)
 
-    def calc_map(i):
+    def calc_map(i, comma=True):
         return (i / len(dados_brutos)) * 100
     resultado = [lista_dados.count(x) for x in range(len(dados_brutos[0]))]
     # resultado = np.array(resultado)
@@ -33,6 +33,9 @@ def n_mudancas(string):
     string_final = ''
     for i in resultado2:
         string_final += f'{i}\r'
+    
+    if comma:
+        string_final = string_final.replace('.', ',')
     cb.setText(string_final)
     # pyperclip.copy(string_final)
     return resultado

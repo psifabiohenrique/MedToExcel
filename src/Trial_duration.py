@@ -37,6 +37,8 @@ def calc_primary_trial_duration(time_data, consequences_data, comma):
     last_reinforce = 1
     result_string = 'LATÊNCIA + TEMPO DE RESPOSTA = Duração da tentativa (início da tentativa até 3a resposta; exclui duração da consequência: SR, Sr ou BO)\r\r'
 
+    session_trial_duration = []
+
     for block in range(5):
         """Separating five blocks of ten reinforcements"""
         result_string += f"Bloco {block + 1}:\t1ª sequência\t 2ª sequência\t 3ª sequência \t 4ª sequência \t--> continua\r"
@@ -66,10 +68,100 @@ def calc_primary_trial_duration(time_data, consequences_data, comma):
         
         try:
             result_string += f"Média:\t{sum(list_duration) / reinforce_per_block}\r\r"
+
+            session_trial_duration.append(sum(list_duration))
         except:
             result_string += f"Média:\t0\r\r"
             
-            
+    """Calculating the session mean"""
+
+    mean_result = {
+        '1': [],
+        '2': [],
+        '3': [],
+        '4': [],
+        '5': [],
+        '6': [],
+        '7': [],
+        '8': [],
+        '9': [],
+        '10': []
+    }
+
+    count_reinforce = 1
+
+    for key, value in result.items():
+        """Organizing the data in a dictionary to calculate session resume mean"""
+
+        count_sequence = 0
+
+        for i in value:
+            try:
+                mean_result[str(count_reinforce)][count_sequence].append(i)
+            except IndexError:
+                mean_result[str(count_reinforce)].append([i])
+            count_sequence += 1
+        
+        if count_reinforce == 10:
+            count_reinforce = 1
+        else:
+            count_reinforce += 1
+    
+    result_string += f"\r\rMédia:\t1ª sequência\t 2ª sequência\t 3ª sequência \t 4ª sequência \t--> continua\r"
+
+    row_labels = [
+        '1, 11, 21, 31, 41',
+        '2, 12, 22, 32, 42',
+        '3, 13, 23, 33, 43',
+        '4, 14, 24, 34, 44',
+        '5, 15, 25, 35, 45',
+        '6, 16, 26, 36, 46',
+        '7, 17, 27, 37, 47',
+        '8, 18, 28, 38, 48',
+        '9, 19, 29, 39, 49',
+        '10, 20, 30, 40, 50'
+    ]
+
+    final_mean_trial_duration = []
+
+    for i in range(10):
+        """Calculating the mean and writing it in the result string"""
+
+        result_string += f"{row_labels[i]}\t"
+        mean_duration = []
+
+        count = 0
+
+        for j in mean_result[str(i + 1)]:
+            sum_duration = 0
+
+            for k in j:
+                sum_duration += k
+
+                try:
+                    final_mean_trial_duration[count].append(k)
+                except IndexError:
+                    final_mean_trial_duration.append([k])
+                
+                mean_duration.append(k)
+            count += 1
+
+            result_string += f"{sum_duration / len(j)}\t"
+        
+        try:
+            result_string += f"\tSoma=IRI:\t{sum(mean_duration)}\t"
+            result_string += f"\tMédia:\t{sum(mean_duration) / len(mean_duration)}\r"
+        except ZeroDivisionError:
+            result_string += f"\tSoma=IRI:\t0\tMédia:\t0\r"
+        
+    result_string += "\r Média Sessão:\t"
+
+    for i in range(len(final_mean_trial_duration)):
+        result_string += f"{sum(final_mean_trial_duration[i]) / len(final_mean_trial_duration[i])}\t"
+
+    result_string += f"\t Média:\t{sum(session_trial_duration) / len(row_time_data)}\r"        
+
+
 
     if comma:
         result_string = result_string.replace('.', ',')

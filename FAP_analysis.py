@@ -3,8 +3,8 @@ from PySide6.QtWidgets import QPushButton, QWidget, QGridLayout, QLabel, QLineEd
 from Selector import Selector
 from src.Copy import calc_row
 from src.Percentage_correct_sequences import calc_percentage_correct_sequences
-from src.Latency import calc_primary_latency, calc_secondary_latency
-from src.Duration import calc_primary_duration, calc_secondary_duration
+from src.Latency import calc_primary_latency
+from src.Duration import calc_primary_duration
 from src.Trial_duration import calc_primary_trial_duration
 from src.Correct_sequence_time import calc_correct_sequence_time
 
@@ -148,13 +148,13 @@ class Program_choice(QWidget):
             self.value_time = calc_row(self.archive, self.sieve_time, False, False)
             self.sieve_consequences = open('./src/consequences.txt')
             self.value_consequences = calc_row(self.archive, self.sieve_consequences, False, False)
-            calc_secondary_latency(self.value_time, self.value_consequences, comma)
+            # calc_secondary_latency(self.value_time, self.value_consequences, comma)
         else:
             self.sieve_time = open('./src/latency.txt')
             self.value_time = calc_row(self.archive, self.sieve_time, False, False)
             self.sieve_consequences = open('./src/consequences.txt')
             self.value_consequences = calc_row(self.archive, self.sieve_consequences, False, False)
-            calc_secondary_duration(self.value_time, self.value_consequences, comma)
+            # calc_secondary_duration(self.value_time, self.value_consequences, comma)
 
 class Constant():
     LATENCY = "latency"

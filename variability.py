@@ -24,19 +24,19 @@ class Variability(QWidget):
         super().__init__()
         self.layout = QVBoxLayout(self)
 
-        self.u_value = GroupFunctionality("U Value")
+        self.u_value = GroupFunctionality("U Value", "Cole a frequência relativa")
         self.u_value.button.clicked.connect(self.get_u_value)
         self.layout.addWidget(self.u_value)
 
-        self.recurrence_time = GroupFunctionality("Recurrence Time")
+        self.recurrence_time = GroupFunctionality("Recurrence Time", "Cole as sequências em ordem no formato '11221'")
         self.recurrence_time.button.clicked.connect(self.get_recurrence)
         self.layout.addWidget(self.recurrence_time)
 
-        self.different_sequences = GroupFunctionality("Different Sequences")
+        self.different_sequences = GroupFunctionality("Different Sequences", "Cole as sequências no formato '11221'")
         self.different_sequences.button.clicked.connect(self.get_different_sequence)
         self.layout.addWidget(self.different_sequences)
 
-        self.switches = GroupFunctionality("Switches")
+        self.switches = GroupFunctionality("Switches", "Cole as sequências no formato '11221'")
         self.switches.button.clicked.connect(self.get_switches)
         self.layout.addWidget(self.switches)
 
@@ -59,23 +59,23 @@ class Variability(QWidget):
         calcular_NSeq(value)
     
     def get_switches(self):
-        # comma = self.switches.checkbox.isChecked()
+        comma = self.switches.checkbox.isChecked()
         value = self.switches.text.text()
         self.switches.text.setText("")
-        n_mudancas(value)
+        n_mudancas(value, comma)
 
 class GroupFunctionality(QWidget):
-    def __init__(self, label):
+    def __init__(self, label, instruction="Enter data"):
         super().__init__()
 
         self.layout = QGridLayout(self)
 
         self.label = QLabel(label)
         self.layout.addWidget(self.label, 0, 0)
-        self.text = QLineEdit()
+        self.text = QLineEdit(instruction)
         self.layout.addWidget(self.text, 1, 0)
         self.button = QPushButton("Calculate")
         self.layout.addWidget(self.button, 2, 0)
-        if "Switches" != label != "Different Sequences":
+        if label != "Different Sequences":
             self.checkbox = QCheckBox("Use Comma")
             self.layout.addWidget(self.checkbox, 2, 1)

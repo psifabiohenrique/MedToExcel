@@ -1,4 +1,5 @@
 from statistics import mean, median
+from .universe import *
 from PySide6.QtGui import QClipboard
 
 
@@ -39,6 +40,16 @@ def calcular_recorrencia(string, virgula):
         dados_brutos = remover_data(dados_brutos)
     valores = []
 
+    n_resp = len(dados_brutos[0])
+    if n_resp == 4:
+        universo = universo4resp
+    elif n_resp == 5:
+        universo = universo5resp
+    elif n_resp == 6:
+        universo = universo6resp
+    elif n_resp == 8:
+        universo = universo8resp
+
     for uni in universo:
         contador = 0
         primeira = True
@@ -57,7 +68,7 @@ def calcular_recorrencia(string, virgula):
     print(valores)
     mean_value = mean(valores)
     median_value = median(valores)
-    resultado = f"{mean_value}\t{median_value}"
+    resultado = f"Média\t Mediana\r{mean_value}\t{median_value}"
 
     if virgula:
         resultado = resultado.replace('.', ',')
