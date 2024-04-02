@@ -4,6 +4,7 @@ from src.U_Value import calcular_valorU
 from src.Recorrence import calcular_recorrencia
 from src.Different_sequences import calcular_NSeq
 from src.Switches import n_mudancas
+from src.rng import calculate_RNG
 
 
 class Variability(QWidget):
@@ -40,6 +41,10 @@ class Variability(QWidget):
         self.switches.button.clicked.connect(self.get_switches)
         self.layout.addWidget(self.switches)
 
+        self.rng = GroupFunctionality("RNG", "Cole as sequências no formato '11221'")
+        self.rng.button.clicked.connect(self.get_rng)
+        self.layout.addWidget(self.rng)
+
     def get_u_value(self):
         comma = self.u_value.checkbox.isChecked()
         value = self.u_value.text.text()
@@ -63,6 +68,13 @@ class Variability(QWidget):
         value = self.switches.text.text()
         self.switches.text.setText("")
         n_mudancas(value, comma)
+    
+    def get_rng(self):
+        comma = self.rng.checkbox.isChecked()
+        value = self.rng.text.text()
+        self.rng.text.setText("")
+        calculate_RNG(value, comma)
+
 
 class GroupFunctionality(QWidget):
     def __init__(self, label, instruction="Enter data"):
