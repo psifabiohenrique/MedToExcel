@@ -4,6 +4,19 @@ from src.Recorrence import remover_data
 
 
 def calc_primary_duration(time_data, consequences_data, comma):
+    """
+    A function to calculate the sequences durations based on time and consequences data.
+
+    Parameters:
+    - time_data: A list of durations in order of occurrence.
+    - consequences_data: A list of consequences in order of occurrence.
+    - comma: A boolean flag to indicate if the result string should replace '.' with ','.
+
+    Returns:
+    - Copy to clipboard a table with the data processed.
+    - "Done" if the function executes successfully.
+    - "Error" if there is an exception during execution.
+    """
     cb = QClipboard()
     row_time_data = clear_data(time_data)
     row_consequences_data = clear_data(consequences_data)
@@ -34,31 +47,52 @@ def calc_primary_duration(time_data, consequences_data, comma):
 
     for block in range(5):
         """Separating five blocks of ten reinforcements"""
-        result_string += f"Bloco {block + 1}:\t1ª sequência\t 2ª sequência\t 3ª sequência \t 4ª sequência \t--> continua\r"
+        result_string += f"Bloco {block + 1}:\t\t\t\t1ª sequência\t 2ª sequência\t 3ª sequência \t 4ª sequência \t--> continua\r"
 
         list_duration = []
         reinforce_per_block = 0
+        list_mean_sequences = []
 
         for reinforce in range(10):
             result_string += f"{last_reinforce}° SR:\t"
             mean_block_duration = 0
+            count = 0
 
             if f"Reforço: {last_reinforce}" in result.keys():
+                next_string = ""
                 for i in result[f"Reforço: {last_reinforce}"]:
                     list_duration.append(i)
                     mean_block_duration += i
 
-                    result_string += f"{i}\t"
+                    if len(list_mean_sequences) <= count:
+                        list_mean_sequences.append([i])
+                    else:
+                        list_mean_sequences[count].append(i)
+                    count += 1
+
+                    next_string += f"{i}\t"
                 
+                """
+                Mean duration of each primary reinforcement:
+                mean_duration = sum(all durations of 1° reinforcement) / len(all durations of 1° reinforcement)
+                """
                 mean_duration = mean_block_duration / len(result[f"Reforço: {last_reinforce}"])
-                result_string += f"\tMédia:\t{mean_duration}\t"
+                result_string += f"Média:\t{mean_duration}\t\t{next_string}"
                 reinforce_per_block += 1
             
             result_string += "\r"
             last_reinforce += 1
         
+        """
+        Mean duration of each block:
+        mean_duration = sum(all durations of each block) / number of primary reinforces in that block
+        """
         try:
-            result_string += f"Média:\t{sum(list_duration) / reinforce_per_block}\r\r"
+            result_string += f"\tMédia:\t{sum(list_duration) / reinforce_per_block}\t\t"
+            for i in list_mean_sequences:
+                result_string += f"{sum(i) / len(i)}\t"
+            
+            result_string += "\r\r"
 
             session_duration.append(sum(list_duration))
         except:
@@ -97,7 +131,7 @@ def calc_primary_duration(time_data, consequences_data, comma):
         else:
             count_reinforce += 1
         
-    result_string += f"\r\rMédia:\t1ª sequência\t 2ª sequência\t 3ª sequência \t 4ª sequência \t--> continua\r"
+    result_string += f"\rMédia:\t\t\t\t\t1ª sequência\t 2ª sequência\t 3ª sequência \t 4ª sequência \t--> continua\r"
 
     row_labels = [
         '1, 11, 21, 31, 41',
@@ -121,7 +155,7 @@ def calc_primary_duration(time_data, consequences_data, comma):
 
         result_string += f"{row_labels[i]}\t"
         mean_duration2 = []
-
+        next_string = ""
         count = 0
 
         for j in mean_result[str(i + 1)]:
@@ -138,20 +172,35 @@ def calc_primary_duration(time_data, consequences_data, comma):
                 mean_duration2.append(k)
             count += 1
 
-            result_string += f"{sum_duration / len(j)}\t"
+            """
+            Mean of durations of each sequence in the (n)° primary reinforce of all blocks:
 
+            mean_duration = sum(all duration of 1° reinforce of all blocks) / len(all duration of 1° reinforce of all blocks)
+            """
+            next_string += f"{sum_duration / len(j)}\t"
+
+        """
+        Mean duration of all sequences in the (n)° primary reinforce of all blocks:
+
+        mean_duration = sum(1° duration of 1° reinforce of all blocks) / len(1° duration of 1° reinforce of all blocks)
+        """
         try:
-            result_string += f"\tMédia:\t{sum(mean_duration2) / len(mean_duration2)}\r"
+            result_string += f"\tMédia:\t{sum(mean_duration2) / len(mean_duration2)}\t\t{next_string}\r"
         except ZeroDivisionError:
             result_string += f"\tMédia:\t0\r"
     
+    """
+    Mean duration of each (n)° sequence of all blocks:
+    mean_duration = sum(all durations) / len(all durations)
+    """
     result_string += "\rMédia Sessão:\t"
 
+    next_string = ""
     for i in range(len(final_mean_duration)):
-        result_string += f"{sum(final_mean_duration[i]) / len(final_mean_duration[i])}\t"
+        next_string += f"{sum(final_mean_duration[i]) / len(final_mean_duration[i])}\t"
     
 
-    result_string += f"\tMédia:\t{sum(session_duration) / len(row_time_data)}\r"
+    result_string += f"\tMédia:\t{sum(session_duration) / len(row_time_data)}\t\t{next_string}\r"
 
 
 

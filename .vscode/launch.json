@@ -9,7 +9,7 @@
             "name": "Depurador do Python: Arquivo Atual",
             "type": "debugpy",
             "request": "launch",
-            "program": "E:\\MedToExcel\\main.py",
+            "program": "./main.py",
             "console": "integratedTerminal"
         }
     ]

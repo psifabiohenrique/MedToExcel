@@ -3,7 +3,7 @@ from PySide6.QtGui import QClipboard
 from src.Recorrence import remover_data
 
 
-def calc_correct_sequence_time(time_data, consequences_data, comma, individual=False):
+def calc_correct_sequence_time(time_data, consequences_data, comma):
     cb = QClipboard()
     row_time_data = clear_data(time_data)
     row_consequences_data = clear_data(consequences_data)
@@ -19,16 +19,10 @@ def calc_correct_sequence_time(time_data, consequences_data, comma, individual=F
     secondary_reinforce_number = 0
     for i in range(len(row_consequences_data)):
 
-        if individual:
-            if f"Reforço: {reinforce_number}" in result.keys():
-                result[f"Reforço: {reinforce_number}"][secondary_reinforce_number].append(row_time_data[i])
-            else:
-                result[str(f"Reforço: {reinforce_number}")] = [[row_time_data[i]],[],[],[],[],[],[],[],[],[],[],[]]
+        if f"Reforço: {reinforce_number}" in result.keys():
+            result[f"Reforço: {reinforce_number}"][secondary_reinforce_number].append(row_time_data[i])
         else:
-            if f"Reforço: {reinforce_number}" in result.keys():
-                result[f"Reforço: {reinforce_number}"][secondary_reinforce_number].append(row_time_data[i])
-            else:
-                result[str(f"Reforço: {reinforce_number}")] = [[row_time_data[i]],[],[],[]]
+            result[str(f"Reforço: {reinforce_number}")] = [[row_time_data[i]],[],[],[]]
 
         if row_consequences_data[i][0] == '1':
             reinforce_number += 1
@@ -38,25 +32,15 @@ def calc_correct_sequence_time(time_data, consequences_data, comma, individual=F
     
 
     last_reinforce = 1
-    if individual:
-        result_string = 'TEMPO DA RESPOSTA CORRETA (Tempo entre início da tentativa e a resposta correta)\r\r'
-    else:
-        result_string = 'TEMPO DA SEQUÊNCIA CORRETA (Tempo entre início da tentativa e a 3a resposta da sequência correta)\r\r'
+    result_string = 'TEMPO DA SEQUÊNCIA CORRETA (Tempo entre início da tentativa e a 3a resposta da sequência correta)\r\r'
 
     session_correct_sequence_time = []
 
     for block in range(5):
         """Separating five blocks of ten reinforcements"""
+        result_string += f"Bloco {block + 1}:\t1ª sequência correta\t 2ª sequência correta\t 3ª sequência correta\t 4ª sequência correta\tMédia\r"
 
-        if individual:
-            result_string += f"Bloco {block + 1}:\t1ª resposta correta\t 2ª resposta correta\t 3ª resposta correta\t 4ª resposta correta\t 5ª resposta correta\t6ª resposta correta\t7ª resposta correta\t8ª resposta correta\t9ª resposta correta\t10ª resposta correta\t11ª resposta correta\t12ª resposta correta\tMédia\r"
-        else:
-            result_string += f"Bloco {block + 1}:\t1ª sequência correta\t 2ª sequência correta\t 3ª sequência correta\t 4ª sequência correta\tMédia\r"
-
-        if individual:
-            list_duration = [[],[],[],[],[],[],[],[],[],[],[],[]]
-        else:
-            list_duration = [[],[],[],[]]
+        list_duration = [[],[],[],[]]
         reinforce_per_block = 0
 
         for reinforce in range(10):
@@ -81,10 +65,7 @@ def calc_correct_sequence_time(time_data, consequences_data, comma, individual=F
             last_reinforce += 1
         
         try:
-            if individual:
-                result_string += f"Média:\t{sum(list_duration[0]) / reinforce_per_block}\t{sum(list_duration[1]) / reinforce_per_block}\t{sum(list_duration[2]) / reinforce_per_block}\t{sum(list_duration[3]) / reinforce_per_block}\t{sum(list_duration[4]) / reinforce_per_block}\t{sum(list_duration[5]) / reinforce_per_block}\t{sum(list_duration[6]) / reinforce_per_block}\t{sum(list_duration[7]) / reinforce_per_block}\t{sum(list_duration[8]) / reinforce_per_block}\t{sum(list_duration[9]) / reinforce_per_block}\t{sum(list_duration[10]) / reinforce_per_block}\t{sum(list_duration[11]) / reinforce_per_block}\t{sum(list_duration[0] + list_duration[1] + list_duration[2] + list_duration[3] + list_duration[4] + list_duration[5] + list_duration[6] + list_duration[7] + list_duration[8] + list_duration[9] + list_duration[10] + list_duration[11]) / (reinforce_per_block)}\r\r"
-            else:
-                result_string += f"Média:\t{sum(list_duration[0]) / reinforce_per_block}\t{sum(list_duration[1]) / reinforce_per_block}\t{sum(list_duration[2]) / reinforce_per_block}\t{sum(list_duration[3]) / reinforce_per_block}\t{sum(list_duration[0] + list_duration[1] + list_duration[2] + list_duration[3]) / (reinforce_per_block)}\r\r"
+            result_string += f"Média:\t{sum(list_duration[0]) / reinforce_per_block}\t{sum(list_duration[1]) / reinforce_per_block}\t{sum(list_duration[2]) / reinforce_per_block}\t{sum(list_duration[3]) / reinforce_per_block}\t{sum(list_duration[0] + list_duration[1] + list_duration[2] + list_duration[3]) / (reinforce_per_block)}\r\r"
 
             session_correct_sequence_time.append(sum(list_duration[0] + list_duration[1] + list_duration[2] + list_duration[3]))
         except:
@@ -129,10 +110,7 @@ def calc_correct_sequence_time(time_data, consequences_data, comma, individual=F
         else:
             count_reinforce += 1
 
-    if individual:
-        result_string += f"\r\rMédias:\t1ª resposta correta\t 2ª resposta correta\t 3ª resposta correta\t 4ª resposta correta\t 5ª resposta correta\t6ª resposta correta\t7ª resposta correta\t8ª resposta correta\t9ª resposta correta\t10ª resposta correta\t11ª resposta correta\t12ª resposta correta\r"
-    else:
-        result_string += f"\r\rMédias:\t1ª Seq Cor\t2ª Seq Cor\t3ª Seq Cor\t4ª Seq Cor\r"
+    result_string += f"\r\rMédias:\t1ª Seq Cor\t2ª Seq Cor\t3ª Seq Cor\t4ª Seq Cor\tMédia\r"
 
     row_labels = [
         '1, 11, 21, 31, 41',

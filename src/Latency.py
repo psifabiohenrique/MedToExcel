@@ -8,7 +8,7 @@ def calc_primary_latency(time_data, consequences_data, comma):
     Calculate primary latency based on time and consequences data.
 
     Args:
-        time_data: list, data related to latencytime
+        time_data: list, data related to latency time
         consequences_data: list, data related to consequences
         comma: bool, whether to replace '.' with ',' in the result string
 
@@ -59,12 +59,14 @@ def calc_primary_latency(time_data, consequences_data, comma):
     last_reinforce = 1
     for block in range(5):
         """Separating five blocks of ten reinforcements"""
-        result_string += f"Bloco {block + 1}\tInício-1a R\t1a e 2a Rs\t2a e 3a Rs\tRepete -->\r"
+        result_string += f"Bloco {block + 1}\t\t\t\t\t\tInício-1a R\t1a e 2a Rs\t2a e 3a Rs\tRepete -->\r"
 
         mean_latency_list = []
         mean_first_second_list = []
         mean_second_third_list = []
         reinforces_per_block = 0
+
+        a, b, c = [], [], []
 
 
         for reinforce in range(10):
@@ -72,8 +74,10 @@ def calc_primary_latency(time_data, consequences_data, comma):
             mean_block_latency = 0
             mean_block_first_second = 0
             mean_block_second_third = 0
+            count = 0
             if f"Reforço: {last_reinforce}" in result.keys():
                 counter = 1
+                next_string = ""
                 for i in result[f"Reforço: {last_reinforce}"]:
                     mean_latency_list.append(i[0])
                     mean_block_latency += i[0]
@@ -81,23 +85,46 @@ def calc_primary_latency(time_data, consequences_data, comma):
                     mean_block_first_second += i[1]
                     mean_second_third_list.append(i[2])
                     mean_block_second_third += i[2]
-                    result_string += f"{i[0]}\t{i[1]}\t{i[2]}\t\t"
+                    next_string += f"{i[0]}\t{i[1]}\t{i[2]}\t\t"
+
+                    if len(a) <= count:
+                        a.append([i[0]])
+                        b.append([i[1]])
+                        c.append([i[2]])
+                    else:
+                        a[count].append(i[0])
+                        b[count].append(i[1])
+                        c[count].append(i[2])
                     
+                    count += 1                    
                     counter += 1
 
+                """mean (latency, first to second response time, second to third response time) of each primary reinforcement:
+                  sum of all latencies divided by the number of latencies"""
                 mean_latency = mean_block_latency/len(result[f"Reforço: {last_reinforce}"])
                 mean_first_second = mean_block_first_second/len(result[f"Reforço: {last_reinforce}"])
                 mean_second_third = mean_block_second_third/len(result[f"Reforço: {last_reinforce}"])
-                result_string += f"\tMédia:\t{mean_latency}\t{mean_first_second}\t{mean_second_third}\t"
+                
+                result_string += f"Média:\t{mean_latency}\t{mean_first_second}\t{mean_second_third}\t\t"
+                result_string += f"{next_string}"
                 reinforces_per_block += 1
             
             result_string += "\r"
             last_reinforce += 1
         
+        """
+        mean (latency, first to second response time, second to third response time) of each block:
+        sum of all block latencies divided by the number of reinforces in the block
+        """
         try:
-            result_string += f"Média:\t{sum(mean_latency_list)/reinforces_per_block}\t"
+            result_string += f"\tMédia:\t{sum(mean_latency_list)/reinforces_per_block}\t"
             result_string += f"{sum(mean_first_second_list)/reinforces_per_block}\t"
-            result_string += f"{sum(mean_second_third_list)/reinforces_per_block}\t\r"
+            result_string += f"{sum(mean_second_third_list)/reinforces_per_block}\t\t"
+
+            for i in range(len(a)):
+                result_string += f"{sum(a[i])/len(a[i])}\t{sum(b[i])/len(b[i])}\t{sum(c[i])/len(c[i])}\t\t"
+
+            result_string += "\r\r"
 
             session_latency.append(sum(mean_latency_list))
             session_first_second.append(sum(mean_first_second_list))
@@ -139,7 +166,7 @@ def calc_primary_latency(time_data, consequences_data, comma):
         else:
             count_reinforce += 1
 
-    result_string += f"\r\rMédia\tInício-1a R\t1a e 2a Rs\t2a e 3a Rs\tRepete -->\r"
+    result_string += f"\r\rMédia\t\t\t\t\t\tInício-1a R\t1a e 2a Rs\t2a e 3a Rs\tRepete -->\r"
     row_labels = [
         '1, 11, 21, 31, 41',
         '2, 12, 22, 32, 42',
@@ -163,6 +190,7 @@ def calc_primary_latency(time_data, consequences_data, comma):
         mean_latency_list2 = []
         mean_first_second_list2 = []
         mean_second_third_list2 = []
+        next_string = ""
         
         count = 0
         for j in mean_result[str(i + 1)]:
@@ -188,26 +216,42 @@ def calc_primary_latency(time_data, consequences_data, comma):
                 mean_second_third_list2.append(k[2])
             count += 1        
 
+            """
+            calculating the mean (latency, first to second response time, second to third response time) of each sequence in the n primary reinforce of all blocks:
+            sum of all latencies of each sequence in the n reinforce of all blocks divided by the number of latencies of each sequence in then reinforce of all blocks
 
-            result_string += f"{sum_latency/len(j)}\t"
-            result_string += f"{sum_first_second/len(j)}\t"
-            result_string += f"{sum_second_third/len(j)}\t\t"
+            Ex: sum(all latency of 1° reinforce of all blocks) / len(all latency of 1° reinforce of all blocks)
+            """
+            next_string += f"{sum_latency/len(j)}\t"
+            next_string += f"{sum_first_second/len(j)}\t"
+            next_string += f"{sum_second_third/len(j)}\t\t"
     
+        """
+        calculating the mean (latency, first to second response time, second to third response time) of all sequences in the n primary reinforce of all blocks:
+        sum of all latencies of all sequences in the n reinforce of all blocks divided by the number of latencies of all sequences in the n reinforce of all blocks
+
+        Ex: sum(1° latency of all reinforces of all session) / len(1° latency of all reinforced of all session)
+        """
         try:
-            result_string += f"\tMédia:\t{sum(mean_latency_list2)/len(mean_latency_list2)}\t{sum(mean_first_second_list2)/len(mean_first_second_list2)}\t{sum(mean_second_third_list2)/len(mean_second_third_list2)}\t\r"
+            result_string += f"Média:\t{sum(mean_latency_list2)/len(mean_latency_list2)}\t{sum(mean_first_second_list2)/len(mean_first_second_list2)}\t{sum(mean_second_third_list2)/len(mean_second_third_list2)}\t\t{next_string}\r"
         except ZeroDivisionError:
-            result_string += f"\tMédia:\t0\t0\t0\t\r"
+            result_string += f"Média:\t0\t0\t0\t\r"
 
 
+    """
+    calculating the mean (latency, first to second response time, second to third response time) of each n sequence of all blocks:
+    sum of all latencies of each n sequence in the n reinforce of all blocks divided by the number of latencies of each n sequence in the n reinforce of all blocks
+    """
     result_string += "\r"
     result_string += f"Média Sessão\t"
 
+    next_string = ""
     for i in range(len(final_mean_latency)):
-        result_string += f"{sum(final_mean_latency[i])/len(final_mean_latency[i])}\t"
-        result_string += f"{sum(final_mean_first_second[i])/len(final_mean_first_second[i])}\t"
-        result_string += f"{sum(final_mean_second_third[i])/len(final_mean_second_third[i])}\t\t"
+        next_string += f"{sum(final_mean_latency[i])/len(final_mean_latency[i])}\t"
+        next_string += f"{sum(final_mean_first_second[i])/len(final_mean_first_second[i])}\t"
+        next_string += f"{sum(final_mean_second_third[i])/len(final_mean_second_third[i])}\t\t"
     
-    result_string += f"\tMédia:\t{sum(session_latency) / (len(row_time_data) / 3)}\t{sum(session_first_second) / (len(row_time_data) / 3)}\t{sum(session_second_third) / (len(row_time_data) / 3)}\t\r"
+    result_string += f"Média:\t{sum(session_latency) / (len(row_time_data) / 3)}\t{sum(session_first_second) / (len(row_time_data) / 3)}\t{sum(session_second_third) / (len(row_time_data) / 3)}\t\t {next_string}\r"
 
         
 
