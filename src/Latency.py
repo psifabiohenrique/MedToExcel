@@ -117,9 +117,9 @@ def calc_primary_latency(time_data, consequences_data, comma):
         sum of all block latencies divided by the number of reinforces in the block
         """
         try:
-            result_string += f"\tMédia:\t{sum(mean_latency_list)/reinforces_per_block}\t"
-            result_string += f"{sum(mean_first_second_list)/reinforces_per_block}\t"
-            result_string += f"{sum(mean_second_third_list)/reinforces_per_block}\t\t"
+            result_string += f"\tMédia:\t{sum(mean_latency_list)/len(mean_latency_list)}\t"
+            result_string += f"{sum(mean_first_second_list)/len(mean_latency_list)}\t"
+            result_string += f"{sum(mean_second_third_list)/len(mean_latency_list)}\t\t"
 
             for i in range(len(a)):
                 result_string += f"{sum(a[i])/len(a[i])}\t{sum(b[i])/len(b[i])}\t{sum(c[i])/len(c[i])}\t\t"

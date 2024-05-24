@@ -88,7 +88,7 @@ def calc_primary_duration(time_data, consequences_data, comma):
         mean_duration = sum(all durations of each block) / number of primary reinforces in that block
         """
         try:
-            result_string += f"\tMédia:\t{sum(list_duration) / reinforce_per_block}\t\t"
+            result_string += f"\tMédia:\t{sum(list_duration) / len(list_duration)}\t\t"
             for i in list_mean_sequences:
                 result_string += f"{sum(i) / len(i)}\t"
             

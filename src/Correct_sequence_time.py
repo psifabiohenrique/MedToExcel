@@ -82,12 +82,13 @@ def calc_correct_sequence_time(time_data, consequences_data, comma, individual=F
         
         try:
             if individual:
-                result_string += f"Média:\t{sum(list_duration[0]) / reinforce_per_block}\t{sum(list_duration[1]) / reinforce_per_block}\t{sum(list_duration[2]) / reinforce_per_block}\t{sum(list_duration[3]) / reinforce_per_block}\t{sum(list_duration[4]) / reinforce_per_block}\t{sum(list_duration[5]) / reinforce_per_block}\t{sum(list_duration[6]) / reinforce_per_block}\t{sum(list_duration[7]) / reinforce_per_block}\t{sum(list_duration[8]) / reinforce_per_block}\t{sum(list_duration[9]) / reinforce_per_block}\t{sum(list_duration[10]) / reinforce_per_block}\t{sum(list_duration[11]) / reinforce_per_block}\t{sum(list_duration[0] + list_duration[1] + list_duration[2] + list_duration[3] + list_duration[4] + list_duration[5] + list_duration[6] + list_duration[7] + list_duration[8] + list_duration[9] + list_duration[10] + list_duration[11]) / (reinforce_per_block)}\r\r"
+                result_string += f"Média:\t{sum(list_duration[0]) / len(list_duration[0])}\t{sum(list_duration[1]) / len(list_duration[1])}\t{sum(list_duration[2]) / len(list_duration[2])}\t{sum(list_duration[3]) / len(list_duration[3])}\t{sum(list_duration[4]) / len(list_duration[4])}\t{sum(list_duration[5]) / len(list_duration[5])}\t{sum(list_duration[6]) / len(list_duration[6])}\t{sum(list_duration[7]) / len(list_duration[7])}\t{sum(list_duration[8]) / len(list_duration[8])}\t{sum(list_duration[9]) / len(list_duration[9])}\t{sum(list_duration[10]) / len(list_duration[10])}\t{sum(list_duration[11]) / len(list_duration[11])}\t{sum(list_duration[0] + list_duration[1] + list_duration[2] + list_duration[3] + list_duration[4] + list_duration[5] + list_duration[6] + list_duration[7] + list_duration[8] + list_duration[9] + list_duration[10] + list_duration[11]) / (len(list_duration[0]) + len(list_duration[1]) + len(list_duration[2]) + len(list_duration[3]) + len(list_duration[4]) + len(list_duration[5]) + len(list_duration[6]) + len(list_duration[7]) + len(list_duration[8]) + len(list_duration[9]) + len(list_duration[10]) + len(list_duration[11]))}\r\r"
             else:
-                result_string += f"Média:\t{sum(list_duration[0]) / reinforce_per_block}\t{sum(list_duration[1]) / reinforce_per_block}\t{sum(list_duration[2]) / reinforce_per_block}\t{sum(list_duration[3]) / reinforce_per_block}\t{sum(list_duration[0] + list_duration[1] + list_duration[2] + list_duration[3]) / (reinforce_per_block)}\r\r"
+                result_string += f"Média:\t{sum(list_duration[0]) / len(list_duration[0])}\t{sum(list_duration[1]) / len(list_duration[1])}\t{sum(list_duration[2]) / len(list_duration[2])}\t{sum(list_duration[3]) / len(list_duration[3])}\t{sum(list_duration[0] + list_duration[1] + list_duration[2] + list_duration[3]) / len(list_duration[0] + list_duration[1] + list_duration[2] + list_duration[3])}\r\r"
 
             session_correct_sequence_time.append(sum(list_duration[0] + list_duration[1] + list_duration[2] + list_duration[3]))
-        except:
+        except Exception as e:
+            print(str(e))
             result_string += f"Média:\t0\r\r"
     
     """Calculating the session mean"""
@@ -156,6 +157,7 @@ def calc_correct_sequence_time(time_data, consequences_data, comma, individual=F
         mean_duration = []
 
         count = 0
+        final_mean_count = 0
         correct_sequence = 0
 
         for j in mean_result[str(i + 1)]:
@@ -165,12 +167,13 @@ def calc_correct_sequence_time(time_data, consequences_data, comma, individual=F
                 sum_duration += k
 
                 try:
-                    final_mean_duration[count].append(k)
+                    final_mean_duration[final_mean_count].append(k)
                 except IndexError:
                     final_mean_duration.append([k])
                 
                 mean_duration.append(k)
-            count += 1
+                count += 1
+            final_mean_count += 1
 
             result_string += f"{sum_duration / len(j)}\t"
 
@@ -182,7 +185,7 @@ def calc_correct_sequence_time(time_data, consequences_data, comma, individual=F
     result_string += "\rMédia Sessão:\t"
 
     for i in range(len(final_mean_duration)):
-        result_string += f"{sum(final_mean_duration[i]) / len(result)}\t"
+        result_string += f"{sum(final_mean_duration[i]) / len(final_mean_duration[i])}\t"
     
     result_string += f"\tMédia:\t{sum(session_correct_sequence_time) / correct_sequence_number}\r"
 
