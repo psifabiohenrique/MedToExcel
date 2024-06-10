@@ -88,6 +88,7 @@ class MainWindow(QMainWindow):
         else:
             if not dir_exists:
                 os.mkdir("./src")
+            if not dir_sheets_exists:
                 os.mkdir("./planilhas")
             with open("./src/consequences.txt", "w") as f:
                 f.write("E-FULL")

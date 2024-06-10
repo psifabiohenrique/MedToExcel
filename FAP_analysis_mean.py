@@ -32,14 +32,10 @@ class FAP_analysis_mean(QWidget):
 
         self.trial_duration = Program_choice(self.mpc_selector, self.individual_response_checkbox, program=Constant.TRIAL_DURATION)
         self.layout.addWidget(self.trial_duration)
-
-        # self.correct_sequence_time = Program_choice("Correct Sequence/Response Time", self.mpc_selector, program=Constant.CORRECT_SEQUENCE_TIME)
-        # self.layout.addWidget(self.correct_sequence_time)
-    
-    
+     
 
 class Program_choice(QWidget):
-    def __init__(self, selector, individual, program="latency"):
+    def __init__(self, selector, individual, program="latency (Response and Sequence)"):
         super().__init__()
         self.program = program
         self.individual = individual
@@ -85,33 +81,25 @@ class Program_choice(QWidget):
             calc_sequence_duration(self.value_time, self.value_consequences, f"{self.program} - {self.mpc_selector.file_path.split("/")[-1]}")
             
         elif self.program == Constant.TRIAL_DURATION:
-            self.sieve_time = open('./src/trial_duration.txt')
-            self.value_time = calc_row(self.archive, self.sieve_time, False, False)
-            self.sieve_consequences = open('./src/consequences.txt')
-            self.value_consequences = calc_row(self.archive, self.sieve_consequences, False, False)
-            calc_trial_duration(self.value_time, self.value_consequences, f"{self.program} - {self.mpc_selector.file_path.split("/")[-1]}")
-        elif self.program == Constant.CORRECT_SEQUENCE_TIME:
             if self.individual.isChecked():
                 self.sieve_time = open('./src/latency.txt')
                 self.value_time = calc_row(self.archive, self.sieve_time, False, False)
                 self.sieve_consequences = open('./src/consequences.txt')
                 self.value_consequences = calc_row(self.archive, self.sieve_consequences, False, False)
-                
+                calc_trial_duration(self.value_time, self.value_consequences, True, f"{self.program} - {self.mpc_selector.file_path.split("/")[-1]}")
             else:
                 self.sieve_time = open('./src/trial_duration.txt')
                 self.value_time = calc_row(self.archive, self.sieve_time, False, False)
                 self.sieve_consequences = open('./src/consequences.txt')
                 self.value_consequences = calc_row(self.archive, self.sieve_consequences, False, False)
-                
-        elif self.program == Constant.PERCENTAGE:
-            self.sieve_consequences = open('./src/consequences.txt')
-            self.value_consequences = calc_row(self.archive, self.sieve_consequences, False, False)
+                calc_trial_duration(self.value_time, self.value_consequences, False, f"{self.program} - {self.mpc_selector.file_path.split("/")[-1]}")
+
             
 
 
 class Constant():
-    LATENCY = "latency"
+    LATENCY = "latency (Response and Sequence)"
     SEQUENCE_DURATION = "sequence duration"
-    TRIAL_DURATION = "trial duration"
+    TRIAL_DURATION = "trial duration (Response and Sequence)"
     CORRECT_SEQUENCE_TIME = "correct sequence time"
     PERCENTAGE = "Percentage of correct sequences"

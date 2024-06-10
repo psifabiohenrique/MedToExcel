@@ -66,16 +66,22 @@ def calc_latency(time_data, consequence_data, individual, name):
             if individual:
                 latency_by_reinforce[reinforce_counter].append(time_data_separated[trial])
             else:
-                latency_by_reinforce[reinforce_counter].append(time_data_separated[0][trial])
-                f2s_by_reinforce[reinforce_counter].append(time_data_separated[1][trial])
-                s2t_by_reinforce[reinforce_counter].append(time_data_separated[2][trial])
+                try:
+                    latency_by_reinforce[reinforce_counter].append(time_data_separated[0][trial])
+                    f2s_by_reinforce[reinforce_counter].append(time_data_separated[1][trial])
+                    s2t_by_reinforce[reinforce_counter].append(time_data_separated[2][trial])
+                except IndexError:
+                    pass
         else:
             if individual:
                 latency_by_reinforce[reinforce_counter] = [time_data_separated[trial]]
             else:
-                latency_by_reinforce[reinforce_counter] = [time_data_separated[0][trial]]
-                f2s_by_reinforce[reinforce_counter] = [time_data_separated[1][trial]]
-                s2t_by_reinforce[reinforce_counter] = [time_data_separated[2][trial]]
+                try:
+                    latency_by_reinforce[reinforce_counter] = [time_data_separated[0][trial]]
+                    f2s_by_reinforce[reinforce_counter] = [time_data_separated[1][trial]]
+                    s2t_by_reinforce[reinforce_counter] = [time_data_separated[2][trial]]
+                except IndexError:
+                    pass
 
         if row_consequence_data[trial][0] == '1':
             reinforce_counter += 1
@@ -83,7 +89,10 @@ def calc_latency(time_data, consequence_data, individual, name):
     wb = openpyxl.Workbook() # Create a excel Workbook 
     ws = wb.active # Create a excel worksheet
     ws.title = "Latencia"
-    ws.append(["Latência da primeira, segunda, penúltima e última sequência"])
+    if individual:
+        ws.append(["Latência da primeira, segunda, penúltima e última resposta"])
+    else:
+        ws.append(["Latência da primeira, segunda, penúltima e última sequência"])
     ws.append(["Reforço", "Primeira", "Segunda", "Penúltima", "Ultima"])
     all_relevant_latency = [],[],[],[]
     for i in latency_by_reinforce:
@@ -133,6 +142,102 @@ def calc_latency(time_data, consequence_data, individual, name):
         ws3.append([])
         ws3.append([])
 
+    # Creating table with data of corrects sequences
+
+    correct_latency = [[]]
+    correct_f2s = [[]]
+    correct_s2t = [[]]
+    reinforce_counter = 0
+
+    for i in range(len(row_consequence_data)):
+        if row_consequence_data[i][0] == '1':
+            if individual:
+                correct_latency[reinforce_counter].append(time_data_separated[i])
+            else:
+                try:
+                    correct_latency[reinforce_counter].append(time_data_separated[0][i])
+                    correct_f2s[reinforce_counter].append(time_data_separated[1][i])
+                    correct_s2t[reinforce_counter].append(time_data_separated[2][i])
+                except IndexError:
+                    pass
+            reinforce_counter += 1
+        if row_consequence_data[i][0] == '2':
+            try:
+                if individual:
+                    correct_latency[reinforce_counter].append(time_data_separated[i])
+                else:
+                    correct_latency[reinforce_counter].append(time_data_separated[0][i])
+                    correct_f2s[reinforce_counter].append(time_data_separated[1][i])
+                    correct_s2t[reinforce_counter].append(time_data_separated[2][i])
+            except IndexError:
+                if individual:
+                    correct_latency.append([time_data_separated[i]])
+                else:
+                    correct_latency.append([time_data_separated[0][i]])
+                    correct_f2s.append([time_data_separated[1][i]])
+                    correct_s2t.append([time_data_separated[2][i]])
+
+
+
+    if individual:
+        ws.append(["Latência das respostas corretas"])
+        ws.append(["Reforço", "Primeira", "Segunda", "Terceira", "Quarta", "Quinta", "Sexta", "Setima", "Oitava", "Nona", "Decima", "Decima Primeira", "Decima Segunda"])
+    else:
+        ws.append(["Latência das sequências corretas"])
+        ws.append(["Reforço", "Primeira", "Segunda", "Terceira", "Quarta"])
+
+        ws2.append(["tempo entre a primeira e a segunda resposta das sequências corretas"])
+        ws2.append(["Reforço", "Primeira", "Segunda", "Terceira", "Quarta"])
+
+        ws3.append(["tempo entre a segunda e a terceira resposta das sequências corretas"])
+        ws3.append(["Reforço", "Primeira", "Segunda", "Terceira", "Quarta"])
+
+    for i in range(len(correct_latency)):
+        if individual:
+            ws.append([f"{i+1}", correct_latency[i][0], correct_latency[i][1], correct_latency[i][2], correct_latency[i][3], correct_latency[i][4], correct_latency[i][5], correct_latency[i][6], correct_latency[i][7], correct_latency[i][8], correct_latency[i][9], correct_latency[i][10], correct_latency[i][11]])
+        else:
+            try:
+                ws2.append([f"{i+1}", correct_f2s[i][0], correct_f2s[i][1], correct_f2s[i][2], correct_f2s[i][3]])
+                ws3.append([f"{i+1}", correct_s2t[i][0], correct_s2t[i][1], correct_s2t[i][2], correct_s2t[i][3]])
+                ws.append([f"{i+1}", correct_latency[i][0], correct_latency[i][1], correct_latency[i][2], correct_latency[i][3]])
+            except IndexError:
+                ws.append(["Algum erro encontrado nesta linha"])
+                ws2.append(["Algum erro encontrado nesta linha"])
+                ws3.append(["Algum erro encontrado nesta linha"])
+    if individual:
+        ws.append(["Média", statistics.mean([x[0] for x in correct_latency]), statistics.mean([x[1] for x in correct_latency]), statistics.mean([x[2] for x in correct_latency]), statistics.mean([x[3] for x in correct_latency]), statistics.mean([x[4] for x in correct_latency]), statistics.mean([x[5] for x in correct_latency]), statistics.mean([x[6] for x in correct_latency]), statistics.mean([x[7] for x in correct_latency]), statistics.mean([x[8] for x in correct_latency]), statistics.mean([x[9] for x in correct_latency]), statistics.mean([x[10] for x in correct_latency]), statistics.mean([x[11] for x in correct_latency])])
+
+    else:
+        def append_mean(list_values):
+            list_first, list_second, list_penultimate, list_last = [], [], [], []
+            for i in range(len(list_values)):
+                try:
+                    list_first.append(list_values[i][0])
+                except IndexError:
+                    pass
+                try:
+                    list_second.append(list_values[i][1])
+                except IndexError:
+                    pass
+                try:
+                    list_penultimate.append(list_values[i][2])
+                except IndexError:
+                    pass
+                try:
+                    list_last.append(list_values[i][3])
+                except IndexError:
+                    pass
+
+            return list_first, list_second, list_penultimate, list_last
+        
+        list_values = append_mean(correct_latency)
+        ws.append(["Média", statistics.mean(list_values[0]), statistics.mean(list_values[1]), statistics.mean(list_values[2]), statistics.mean(list_values[3])])
+        list_values = append_mean(correct_f2s)
+        ws2.append(["Média", statistics.mean(list_values[0]), statistics.mean(list_values[1]), statistics.mean(list_values[2]), statistics.mean(list_values[3])])
+        list_values = append_mean(correct_s2t)
+        ws3.append(["Média", statistics.mean(list_values[0]), statistics.mean(list_values[1]), statistics.mean(list_values[2]), statistics.mean(list_values[3])])
+
+
     # Coping data to excel
     wb.save(f"./planilhas/{name}.xlsx")
 
@@ -177,10 +282,31 @@ def calc_sequence_duration(time_data, consequence_data, name):
     ws.append([])
     ws.append([])
 
+
+    correct_duration = [[]]
+    reinforce_counter = 0
+
+    for i in range(len(row_consequence_data)):
+        if row_consequence_data[i][0] == '1':
+            correct_duration[reinforce_counter].append(time_data_separated[i])
+            reinforce_counter += 1
+        if row_consequence_data[i][0] == '2':
+            try:
+                correct_duration[reinforce_counter].append(time_data_separated[i])
+            except IndexError:
+                correct_duration.append([time_data_separated[i]])
+
+    ws.append(["Duração das sequências corretas"])
+    ws.append(["Reforço", "Primeira", "Segunda", "Terceira", "Quarta"])
+    for i in range(len(correct_duration)):
+        ws.append([f"{i + 1}", correct_duration[i][0], correct_duration[i][1], correct_duration[i][2], correct_duration[i][3]])
+    
+    ws.append(["Média", statistics.mean([x[0] for x in correct_duration]), statistics.mean([x[1] for x in correct_duration]), statistics.mean([x[2] for x in correct_duration]), statistics.mean([x[3] for x in correct_duration])])
+
     # Coping data to excel
     wb.save(f"./planilhas/{name}.xlsx")
 
-def calc_trial_duration(time_data, consequence_data, name):
+def calc_trial_duration(time_data, consequence_data, individual, name):
     cb = QClipboard()
     row_time_data = clear_data(time_data)
     row_consequence_data = clear_data(consequence_data)
@@ -219,6 +345,35 @@ def calc_trial_duration(time_data, consequence_data, name):
     ws.append(["Média", statistics.mean(all_relevant_duration[0]), statistics.mean(all_relevant_duration[1]), statistics.mean(all_relevant_duration[2]), statistics.mean(all_relevant_duration[3])])
     ws.append([])
     ws.append([])
+
+
+    correct_duration = [[]]
+    reinforce_counter = 0
+
+    for i in range(len(row_consequence_data)):
+        if row_consequence_data[i][0] == '1':
+            correct_duration[reinforce_counter].append(time_data_separated[i])
+            reinforce_counter += 1
+        if row_consequence_data[i][0] == '2':
+            try:
+                correct_duration[reinforce_counter].append(time_data_separated[i])
+            except IndexError:
+                correct_duration.append([time_data_separated[i]])
+
+    if individual:
+        ws.append(["Duração das respostas corretas"])
+        ws.append(["Reforço", "Primeira", "Segunda", "Terceira", "Quarta", "Quinta", "Sexta", "Sétima", "Oitava", "Nona", "Decima", "Decima Primeira", "Decima Segunda"])
+        for i in range(len(correct_duration)):
+            ws.append([f"{i + 1}", correct_duration[i][0], correct_duration[i][1], correct_duration[i][2], correct_duration[i][3], correct_duration[i][4], correct_duration[i][5], correct_duration[i][6], correct_duration[i][7], correct_duration[i][8], correct_duration[i][9], correct_duration[i][10], correct_duration[i][11]])
+        
+        ws.append(["Média", statistics.mean([x[0] for x in correct_duration]), statistics.mean([x[1] for x in correct_duration]), statistics.mean([x[2] for x in correct_duration]), statistics.mean([x[3] for x in correct_duration]), statistics.mean([x[4] for x in correct_duration]), statistics.mean([x[5] for x in correct_duration]), statistics.mean([x[6] for x in correct_duration]), statistics.mean([x[7] for x in correct_duration]), statistics.mean([x[8] for x in correct_duration]), statistics.mean([x[9] for x in correct_duration]), statistics.mean([x[10] for x in correct_duration]), statistics.mean([x[11] for x in correct_duration])])
+    else:
+        ws.append(["Duração das tentativas corretas"])
+        ws.append(["Reforço", "Primeira", "Segunda", "Terceira", "Quarta"])
+        for i in range(len(correct_duration)):
+            ws.append([f"{i + 1}", correct_duration[i][0], correct_duration[i][1], correct_duration[i][2], correct_duration[i][3]])
+        
+        ws.append(["Média", statistics.mean([x[0] for x in correct_duration]), statistics.mean([x[1] for x in correct_duration]), statistics.mean([x[2] for x in correct_duration]), statistics.mean([x[3] for x in correct_duration])])
 
     # Coping data to excel
     wb.save(f"./planilhas/{name}.xlsx")
