@@ -3,6 +3,7 @@
 
 # Excel Data generated
 *.xlsx
+erros/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

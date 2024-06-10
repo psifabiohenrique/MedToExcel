@@ -2,6 +2,7 @@ from PySide6.QtGui import QClipboard
 import openpyxl
 import statistics
 from src.Recorrence import remover_data
+from src.Error_log import set_errors, SEQUENCE_RESPONSE_ERROR
 
 
 
@@ -110,8 +111,10 @@ def calc_latency(time_data, consequence_data, individual, name):
        
         ws.append(temp_cels)
 
-
-    ws.append(["Média", statistics.mean(all_relevant_latency[0]), statistics.mean(all_relevant_latency[1]), statistics.mean(all_relevant_latency[2]), statistics.mean(all_relevant_latency[3])])
+    try:
+        ws.append(["Média", statistics.mean(all_relevant_latency[0]), statistics.mean(all_relevant_latency[1]), statistics.mean(all_relevant_latency[2]), statistics.mean(all_relevant_latency[3])])
+    except statistics.StatisticsError:
+        set_errors(SEQUENCE_RESPONSE_ERROR)
     ws.append([])
     ws.append([])
 
@@ -245,8 +248,11 @@ def calc_latency(time_data, consequence_data, individual, name):
             for cor in range(len(reinf)):
                 means_latency[cor].append(reinf[cor])
         temp = ["Média:",]
-        for cel in means_latency:
-            temp.append(statistics.mean(cel))
+        try:
+            for cel in means_latency:
+                    temp.append(statistics.mean(cel))
+        except statistics.StatisticsError:
+            set_errors(SEQUENCE_RESPONSE_ERROR)
         ws.append(temp)
 
     else:

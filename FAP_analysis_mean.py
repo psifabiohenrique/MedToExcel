@@ -3,6 +3,7 @@ from PySide6.QtWidgets import QPushButton, QWidget, QGridLayout, QLabel, QLineEd
 from Selector import Selector
 from src.Copy import calc_row
 from src.mean_fap_analysis import calc_latency, calc_sequence_duration, calc_trial_duration
+from src.Error_log import set_errors
 
 
 
@@ -65,20 +66,29 @@ class Program_choice(QWidget):
                 self.value_time = calc_row(self.archive, self.sieve_time, False, False)
                 self.sieve_consequences = open('./src/consequences.txt')
                 self.value_consequences = calc_row(self.archive, self.sieve_consequences, False, False)
-                calc_latency(self.value_time, self.value_consequences, True, f"{self.program} - {self.mpc_selector.file_path.split("/")[-1]}")
+                try:
+                    calc_latency(self.value_time, self.value_consequences, True, f"{self.program} - {self.mpc_selector.file_path.split("/")[-1]}")
+                except Exception as e:
+                    set_errors(e)
             else:
                 self.sieve_time = open('./src/latency.txt')
                 self.value_time = calc_row(self.archive, self.sieve_time, False, False)
                 self.sieve_consequences = open('./src/consequences.txt')
                 self.value_consequences = calc_row(self.archive, self.sieve_consequences, False, False)
-                calc_latency(self.value_time, self.value_consequences, False, f"{self.program} - {self.mpc_selector.file_path.split("/")[-1]}")
+                try:
+                    calc_latency(self.value_time, self.value_consequences, False, f"{self.program} - {self.mpc_selector.file_path.split("/")[-1]}")
+                except Exception as e:
+                    set_errors(e)
 
         elif self.program == Constant.SEQUENCE_DURATION:
             self.sieve_time = open('./src/duration.txt')
             self.value_time = calc_row(self.archive, self.sieve_time, False, False)
             self.sieve_consequences = open('./src/consequences.txt')
             self.value_consequences = calc_row(self.archive, self.sieve_consequences, False, False)
-            calc_sequence_duration(self.value_time, self.value_consequences, f"{self.program} - {self.mpc_selector.file_path.split("/")[-1]}")
+            try:
+                calc_sequence_duration(self.value_time, self.value_consequences, f"{self.program} - {self.mpc_selector.file_path.split("/")[-1]}")
+            except Exception as e:
+                set_errors(e)
             
         elif self.program == Constant.TRIAL_DURATION:
             if self.individual.isChecked():
@@ -86,13 +96,19 @@ class Program_choice(QWidget):
                 self.value_time = calc_row(self.archive, self.sieve_time, False, False)
                 self.sieve_consequences = open('./src/consequences.txt')
                 self.value_consequences = calc_row(self.archive, self.sieve_consequences, False, False)
-                calc_trial_duration(self.value_time, self.value_consequences, True, f"{self.program} - {self.mpc_selector.file_path.split("/")[-1]}")
+                try:
+                    calc_trial_duration(self.value_time, self.value_consequences, True, f"{self.program} - {self.mpc_selector.file_path.split("/")[-1]}")
+                except Exception as e:
+                    set_errors(e)
             else:
                 self.sieve_time = open('./src/trial_duration.txt')
                 self.value_time = calc_row(self.archive, self.sieve_time, False, False)
                 self.sieve_consequences = open('./src/consequences.txt')
                 self.value_consequences = calc_row(self.archive, self.sieve_consequences, False, False)
-                calc_trial_duration(self.value_time, self.value_consequences, False, f"{self.program} - {self.mpc_selector.file_path.split("/")[-1]}")
+                try:
+                    calc_trial_duration(self.value_time, self.value_consequences, False, f"{self.program} - {self.mpc_selector.file_path.split("/")[-1]}")
+                except Exception as e:
+                    set_errors(e)
 
             
 
