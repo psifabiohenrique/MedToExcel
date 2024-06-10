@@ -121,12 +121,16 @@ def calc_latency(time_data, consequence_data, individual, name):
         ws2.append(["Reforço", "Primeira", "Segunda", "Penúltima", "Ultima"])
         all_relevant_f2s = [],[],[],[]
         for i in f2s_by_reinforce:
-            all_relevant_f2s[0].append(f2s_by_reinforce[i][0])
-            all_relevant_f2s[1].append(f2s_by_reinforce[i][1])
-            all_relevant_f2s[2].append(f2s_by_reinforce[i][-2])
-            all_relevant_f2s[3].append(f2s_by_reinforce[i][-1])
-        
-            ws2.append([f"{i}", f2s_by_reinforce[i][0], f2s_by_reinforce[i][1], f2s_by_reinforce[i][-2], f2s_by_reinforce[i][-1]])
+            temp_index_of = [0, 1, -2, -1]
+            temp_cels = [f"{i}",]
+            for ii in range(len(temp_index_of)):
+                try:
+                    all_relevant_f2s[ii].append(f2s_by_reinforce[i][temp_index_of[ii]])
+                    temp_cels.append(f2s_by_reinforce[i][temp_index_of[ii]])
+                except IndexError:
+                    pass
+    
+            ws2.append(temp_cels)
 
         ws2.append(["Média", statistics.mean(all_relevant_f2s[0]), statistics.mean(all_relevant_f2s[1]), statistics.mean(all_relevant_f2s[2]), statistics.mean(all_relevant_f2s[3])])
         ws2.append([])
@@ -138,12 +142,16 @@ def calc_latency(time_data, consequence_data, individual, name):
         ws3.append(["Reforço", "Primeira", "Segunda", "Penúltima", "Ultima"])
         all_relevant_s2t = [],[],[],[]
         for i in s2t_by_reinforce:
-            all_relevant_s2t[0].append(s2t_by_reinforce[i][0])
-            all_relevant_s2t[1].append(s2t_by_reinforce[i][1])
-            all_relevant_s2t[2].append(s2t_by_reinforce[i][-2])
-            all_relevant_s2t[3].append(s2t_by_reinforce[i][-1])
+            temp_index_of = [0, 1, -2, -1]
+            temp_cels = [f"{i}",]
+            for ii in range(len(temp_index_of)):
+                try:
+                    all_relevant_s2t[ii].append(s2t_by_reinforce[i][temp_index_of[ii]])
+                    temp_cels.append(s2t_by_reinforce[i][temp_index_of[ii]])
+                except IndexError:
+                    pass
         
-            ws3.append([f"{i}", s2t_by_reinforce[i][0], s2t_by_reinforce[i][1], s2t_by_reinforce[i][-2], s2t_by_reinforce[i][-1]])
+            ws3.append(temp_cels)
 
         ws3.append(["Média", statistics.mean(all_relevant_s2t[0]), statistics.mean(all_relevant_s2t[1]), statistics.mean(all_relevant_s2t[2]), statistics.mean(all_relevant_s2t[3])])
         ws3.append([])
@@ -215,17 +223,17 @@ def calc_latency(time_data, consequence_data, individual, name):
                 ws3.append([f"{i+1}", correct_s2t[i][0], correct_s2t[i][1], correct_s2t[i][2], correct_s2t[i][3]])
                 ws.append([f"{i+1}", correct_latency[i][0], correct_latency[i][1], correct_latency[i][2], correct_latency[i][3]])
             except IndexError:
-                temp = [i+1, ]
+                temp = [f"{i+1}", ]
                 for cor in correct_latency[i]:
                     temp.append(cor)
                 ws.append(temp)
 
-                temp = [i+1, ]
+                temp = [f"{i+1}", ]
                 for cor in correct_f2s[i]:
                     temp.append(cor)
                 ws2.append(temp)
 
-                temp = [i+1, ]
+                temp = [f"{i+1}", ]
                 for cor in correct_s2t[i]:
                     temp.append(cor)
                 ws3.append(temp)
