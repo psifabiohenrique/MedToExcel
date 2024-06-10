@@ -2,7 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=qt,python
 
 # Excel Data generated
-.xlsx
+*.xlsx
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

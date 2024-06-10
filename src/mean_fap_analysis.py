@@ -96,12 +96,19 @@ def calc_latency(time_data, consequence_data, individual, name):
     ws.append(["Reforço", "Primeira", "Segunda", "Penúltima", "Ultima"])
     all_relevant_latency = [],[],[],[]
     for i in latency_by_reinforce:
-        all_relevant_latency[0].append(latency_by_reinforce[i][0])
-        all_relevant_latency[1].append(latency_by_reinforce[i][1])
-        all_relevant_latency[2].append(latency_by_reinforce[i][-2])
-        all_relevant_latency[3].append(latency_by_reinforce[i][-1])
+        temp_index_of = [0, 1, -2, -1]
+        temp_cels = [f"{i}",]
+        for ii in range(len(temp_index_of)):
+            try:
+                all_relevant_latency[ii].append(latency_by_reinforce[i][temp_index_of[ii]])
+                temp_cels.append(latency_by_reinforce[i][temp_index_of[ii]])
+            except IndexError:
+                pass
+        # all_relevant_latency[1].append(latency_by_reinforce[i][1])
+        # all_relevant_latency[2].append(latency_by_reinforce[i][-2])
+        # all_relevant_latency[3].append(latency_by_reinforce[i][-1])
        
-        ws.append([f"{i}", latency_by_reinforce[i][0], latency_by_reinforce[i][1], latency_by_reinforce[i][-2], latency_by_reinforce[i][-1]])
+        ws.append(temp_cels)
 
 
     ws.append(["Média", statistics.mean(all_relevant_latency[0]), statistics.mean(all_relevant_latency[1]), statistics.mean(all_relevant_latency[2]), statistics.mean(all_relevant_latency[3])])
@@ -194,18 +201,45 @@ def calc_latency(time_data, consequence_data, individual, name):
 
     for i in range(len(correct_latency)):
         if individual:
-            ws.append([f"{i+1}", correct_latency[i][0], correct_latency[i][1], correct_latency[i][2], correct_latency[i][3], correct_latency[i][4], correct_latency[i][5], correct_latency[i][6], correct_latency[i][7], correct_latency[i][8], correct_latency[i][9], correct_latency[i][10], correct_latency[i][11]])
+            try:
+                ws.append([f"{i+1}", correct_latency[i][0], correct_latency[i][1], correct_latency[i][2], correct_latency[i][3], correct_latency[i][4], correct_latency[i][5], correct_latency[i][6], correct_latency[i][7], correct_latency[i][8], correct_latency[i][9], correct_latency[i][10], correct_latency[i][11]])
+            except IndexError:
+                temp = [f"{i+1}", ]
+                for cor in correct_latency[i]:
+                    temp.append(cor)
+                ws.append(temp)
+                
         else:
             try:
                 ws2.append([f"{i+1}", correct_f2s[i][0], correct_f2s[i][1], correct_f2s[i][2], correct_f2s[i][3]])
                 ws3.append([f"{i+1}", correct_s2t[i][0], correct_s2t[i][1], correct_s2t[i][2], correct_s2t[i][3]])
                 ws.append([f"{i+1}", correct_latency[i][0], correct_latency[i][1], correct_latency[i][2], correct_latency[i][3]])
             except IndexError:
-                ws.append(["Algum erro encontrado nesta linha"])
-                ws2.append(["Algum erro encontrado nesta linha"])
-                ws3.append(["Algum erro encontrado nesta linha"])
+                temp = [i+1, ]
+                for cor in correct_latency[i]:
+                    temp.append(cor)
+                ws.append(temp)
+
+                temp = [i+1, ]
+                for cor in correct_f2s[i]:
+                    temp.append(cor)
+                ws2.append(temp)
+
+                temp = [i+1, ]
+                for cor in correct_s2t[i]:
+                    temp.append(cor)
+                ws3.append(temp)
+
     if individual:
-        ws.append(["Média", statistics.mean([x[0] for x in correct_latency]), statistics.mean([x[1] for x in correct_latency]), statistics.mean([x[2] for x in correct_latency]), statistics.mean([x[3] for x in correct_latency]), statistics.mean([x[4] for x in correct_latency]), statistics.mean([x[5] for x in correct_latency]), statistics.mean([x[6] for x in correct_latency]), statistics.mean([x[7] for x in correct_latency]), statistics.mean([x[8] for x in correct_latency]), statistics.mean([x[9] for x in correct_latency]), statistics.mean([x[10] for x in correct_latency]), statistics.mean([x[11] for x in correct_latency])])
+        # ws.append(["Média", statistics.mean([x[0] for x in correct_latency]), statistics.mean([x[1] for x in correct_latency]), statistics.mean([x[2] for x in correct_latency]), statistics.mean([x[3] for x in correct_latency]), statistics.mean([x[4] for x in correct_latency]), statistics.mean([x[5] for x in correct_latency]), statistics.mean([x[6] for x in correct_latency]), statistics.mean([x[7] for x in correct_latency]), statistics.mean([x[8] for x in correct_latency]), statistics.mean([x[9] for x in correct_latency]), statistics.mean([x[10] for x in correct_latency]), statistics.mean([x[11] for x in correct_latency])])
+        means_latency = [[] for x in range(12)]
+        for reinf in correct_latency:
+            for cor in range(len(reinf)):
+                means_latency[cor].append(reinf[cor])
+        temp = ["Média:",]
+        for cel in means_latency:
+            temp.append(statistics.mean(cel))
+        ws.append(temp)
 
     else:
         def append_mean(list_values):
