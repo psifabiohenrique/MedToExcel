@@ -21,7 +21,7 @@ def set_errors(e):
         logging.basicConfig(filename=f'./erros/ErrorLog_{time.strftime("%d-%m-%Y-%H-%M-%S")}.log', level=logging.DEBUG)
         logging.error('Ocorreu um erro:', exc_info=True)
 
-        msg_box.setText(str(f"O arquivo de log se encontra em ./erros/{time.strftime("%d-%m-%Y-%H-%M-%S")}.log"))
+        msg_box.setText(f"O arquivo de log se encontra em ./erros/{time.strftime('%d-%m-%Y-%H-%M-%S')}.log")
     msg_box.exec()
 
 SEQUENCE_RESPONSE_ERROR = "A condição do animal não condiz com a opção escolhida. Verifique a caixa de respostas individuais e tente novamente."
