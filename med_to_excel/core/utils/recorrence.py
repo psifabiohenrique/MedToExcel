@@ -1,5 +1,5 @@
 from statistics import mean, median
-from .universe import *
+from .universe import universo4resp, universo5resp, universo6resp, universo8resp
 from PySide6.QtGui import QClipboard
 
 

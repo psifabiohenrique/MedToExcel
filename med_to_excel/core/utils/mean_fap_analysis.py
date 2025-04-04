@@ -1,8 +1,9 @@
 from PySide6.QtGui import QClipboard
 import openpyxl
 import statistics
-from src.Recorrence import remover_data
-from src.Error_log import set_errors, SEQUENCE_RESPONSE_ERROR
+import math
+from med_to_excel.core.utils.recorrence import remover_data
+from med_to_excel.core.utils.error_log import set_errors, SEQUENCE_RESPONSE_ERROR
 
 
 

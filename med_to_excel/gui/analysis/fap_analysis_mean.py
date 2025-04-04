@@ -8,14 +8,14 @@ from PySide6.QtWidgets import (
     QFrame,
 )
 
-from Selector import Selector
-from src.Copy import calc_row
-from src.mean_fap_analysis import (
+from med_to_excel.gui.widgets.selector import Selector
+from med_to_excel.core.utils.copy import calc_row
+from med_to_excel.core.utils.mean_fap_analysis import (
     calc_latency,
     calc_sequence_duration,
     calc_trial_duration,
 )
-from src.Error_log import set_errors
+from med_to_excel.core.utils.error_log import set_errors
 
 
 class FAP_analysis_mean(QWidget):

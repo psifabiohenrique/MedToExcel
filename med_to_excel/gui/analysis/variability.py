@@ -1,10 +1,10 @@
 from PySide6.QtWidgets import QPushButton, QWidget, QGridLayout, QLabel, QLineEdit, QCheckBox, QVBoxLayout
 
-from src.U_Value import calcular_valorU
-from src.Recorrence import calcular_recorrencia
-from src.Different_sequences import calcular_NSeq
-from src.Switches import n_mudancas
-from src.rng import calculate_RNG
+from med_to_excel.core.utils.u_value import calcular_valorU
+from med_to_excel.core.utils.recorrence import calcular_recorrencia
+from med_to_excel.core.utils.different_sequences import calcular_NSeq
+from med_to_excel.core.utils.switches import n_mudancas
+from med_to_excel.core.utils.rng import calculate_RNG
 
 
 class Variability(QWidget):
@@ -58,7 +58,6 @@ class Variability(QWidget):
         calcular_recorrencia(value, comma)
     
     def get_different_sequence(self):
-        # comma = self.different_sequences.checkbox.isChecked()
         value = self.different_sequences.text.text()
         self.different_sequences.text.setText("")
         calcular_NSeq(value)

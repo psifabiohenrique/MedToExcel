@@ -1,10 +1,17 @@
-from PySide6.QtWidgets import QMainWindow, QPushButton, QWidget, QHBoxLayout, QVBoxLayout
+from PySide6.QtWidgets import (
+    QMainWindow,
+    QWidget,
+    QVBoxLayout,
+    QPushButton,
+    QFrame,
+    QHBoxLayout,
+)
 import os
 
-from med_to_excel import MedToExcel
-from variability import Variability
-from FAP_analysis import FAP_analysis
-from FAP_analysis_mean import FAP_analysis_mean
+from med_to_excel.gui.analysis.variability import Variability
+from med_to_excel.gui.analysis.fap_analysis import FAP_analysis
+from med_to_excel.gui.analysis.fap_analysis_mean import FAP_analysis_mean
+from med_to_excel.core.med_to_excel import MedToExcel
 
 
 class MainWindow(QMainWindow):
@@ -52,18 +59,10 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.window)
 
     def set_med_to_excel(self):
-        # widgets = self.layout.findChildren(QWidget)
-        # for widget in widgets:
-        #     widget.deleteLater()
-        # self.layout.addWidget(self.menu)
         self.set_initial()
         self.layout.addWidget(self.med_to_excel)
     
     def set_variability(self):
-        # widgets = self.layout.findChildren(QWidget)
-        # for widget in widgets:
-        #     widget.deleteLater()
-        # self.layout.addWidget(self.menu)
         self.set_initial()
         self.layout.addWidget(self.variability)
     

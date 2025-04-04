@@ -1,6 +1,5 @@
 from PySide6.QtGui import QClipboard
-
-from src.Recorrence import remover_ponto_virgula, remover_data, remover_zeros
+from med_to_excel.core.utils.recorrence import remover_ponto_virgula, remover_data, remover_zeros
 
 
 def calcular_NSeq(string):

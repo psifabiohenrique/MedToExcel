@@ -2,8 +2,8 @@ from typing import List, Dict
 import math
 import numpy as np
 from PySide6.QtGui import QClipboard
-from src.universe_dict import universe_four_responses, universe_six_responses, universe_eight_responses, universe_five_responses
-from src.Recorrence import remover_data
+from med_to_excel.core.utils.universe_dict import universe_four_responses, universe_six_responses, universe_eight_responses, universe_five_responses
+from med_to_excel.core.utils.recorrence import remover_data
 
 
 def calculate_RNG(string: List[str], comma: bool=True) -> float:

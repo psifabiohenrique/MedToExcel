@@ -1,7 +1,7 @@
 from PySide6.QtGui import QClipboard
 
 import math
-from src.Recorrence import remover_data
+from med_to_excel.core.utils.recorrence import remover_data
 
 
 def calcular_valorU(string, virgula):

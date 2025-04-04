@@ -1,5 +1,0 @@
-pyside6
-pyqtdarktheme
-pyinstaller
-numpy
-openpyxl

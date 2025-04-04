@@ -1,5 +1,5 @@
 from PySide6.QtGui import QClipboard
-from src.Correct_sequence_time import clear_data
+from med_to_excel.core.utils.correct_sequence_time import clear_data
 
 
 def calc_correct_response_time(time_data, consequences_data, comma):

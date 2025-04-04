@@ -1,6 +1,5 @@
 from PySide6.QtGui import QClipboard
-
-from src.Recorrence import remover_data
+from med_to_excel.core.utils.recorrence import remover_data
 
 
 def calc_primary_latency(time_data, consequences_data, comma):

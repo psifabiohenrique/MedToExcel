@@ -1,13 +1,13 @@
 from PySide6.QtWidgets import QPushButton, QWidget, QGridLayout, QLabel, QLineEdit, QCheckBox, QVBoxLayout, QFrame
 
-from Selector import Selector
-from src.Copy import calc_row
-from src.Percentage_correct_sequences import calc_percentage_correct_sequences
-from src.Latency import calc_primary_latency
-from src.Duration import calc_primary_duration
-from src.Trial_duration import calc_primary_trial_duration_or_individual_latency
-from src.Correct_sequence_time import calc_correct_sequence_time
-from src.Correct_response_time import calc_correct_response_time
+from med_to_excel.gui.widgets.selector import Selector
+from med_to_excel.core.utils.copy import calc_row
+from med_to_excel.core.utils.percentage_correct_sequences import calc_percentage_correct_sequences
+from med_to_excel.core.utils.latency import calc_primary_latency
+from med_to_excel.core.utils.duration import calc_primary_duration
+from med_to_excel.core.utils.trial_duration import calc_primary_trial_duration_or_individual_latency
+from med_to_excel.core.utils.correct_sequence_time import calc_correct_sequence_time
+from med_to_excel.core.utils.correct_response_time import calc_correct_response_time
 
 
 class FAP_analysis(QWidget):
