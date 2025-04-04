@@ -3,7 +3,6 @@ from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
     QPushButton,
-    QFrame,
     QHBoxLayout,
 )
 import os
@@ -61,15 +60,15 @@ class MainWindow(QMainWindow):
     def set_med_to_excel(self):
         self.set_initial()
         self.layout.addWidget(self.med_to_excel)
-    
+
     def set_variability(self):
         self.set_initial()
         self.layout.addWidget(self.variability)
-    
+
     def set_fap_analysis(self):
         self.set_initial()
         self.layout.addWidget(self.fap_analysis)
-    
+
     def set_fap_analysis_mean(self):
         self.set_initial()
         self.layout.addWidget(self.fap_analysis_mean)
@@ -82,7 +81,14 @@ class MainWindow(QMainWindow):
         duration_exists = os.path.exists("./src/duration.txt")
         trial_duration = os.path.exists("./src/trial_duration.txt")
 
-        if dir_exists and dir_sheets_exists and consequences_exists and latency_exists and duration_exists and trial_duration:
+        if (
+            dir_exists
+            and dir_sheets_exists
+            and consequences_exists
+            and latency_exists
+            and duration_exists
+            and trial_duration
+        ):
             return "Archives Checked"
         else:
             if not dir_exists:
