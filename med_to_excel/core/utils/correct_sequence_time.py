@@ -1,219 +1,206 @@
+from typing import Dict, List, Union, Tuple
 from PySide6.QtGui import QClipboard
 from med_to_excel.core.utils.recorrence import remover_data
 
 
-def calc_correct_sequence_time(time_data, consequences_data, comma, individual=False):
-    cb = QClipboard()
-    row_time_data = clear_data(time_data)
-    row_consequences_data = clear_data(consequences_data)
-
-    reinforce_number = 1
-    result = {}
-
-    temp = []
-    for i in row_time_data:
-        temp.append(int(i.split('.')[0]))
-    row_time_data = temp
-
-    secondary_reinforce_number = 0
-    for i in range(len(row_consequences_data)):
-
-        if individual:
-            if f"Reforço: {reinforce_number}" in result.keys():
-                result[f"Reforço: {reinforce_number}"][secondary_reinforce_number].append(row_time_data[i])
-            else:
-                result[str(f"Reforço: {reinforce_number}")] = [[row_time_data[i]],[],[],[],[],[],[],[],[],[],[],[]]
-        else:
-            if f"Reforço: {reinforce_number}" in result.keys():
-                result[f"Reforço: {reinforce_number}"][secondary_reinforce_number].append(row_time_data[i])
-            else:
-                result[str(f"Reforço: {reinforce_number}")] = [[row_time_data[i]],[],[],[]]
-
-        if row_consequences_data[i][0] == '1':
-            reinforce_number += 1
-            secondary_reinforce_number = 0
-        if row_consequences_data[i][0] == '2':
-            secondary_reinforce_number += 1
+def process_time_data(time_data: str) -> List[int]:
+    """
+    Process time data by converting string values to integers.
     
-
-    last_reinforce = 1
-    if individual:
-        result_string = 'TEMPO DA RESPOSTA CORRETA (Tempo entre início da tentativa e a resposta correta)\r\r'
-    else:
-        result_string = 'TEMPO DA SEQUÊNCIA CORRETA (Tempo entre início da tentativa e a 3a resposta da sequência correta)\r\r'
-
-    session_correct_sequence_time = []
-
-    for block in range(5):
-        """Separating five blocks of ten reinforcements"""
-
-        if individual:
-            result_string += f"Bloco {block + 1}:\t1ª resposta correta\t 2ª resposta correta\t 3ª resposta correta\t 4ª resposta correta\t 5ª resposta correta\t6ª resposta correta\t7ª resposta correta\t8ª resposta correta\t9ª resposta correta\t10ª resposta correta\t11ª resposta correta\t12ª resposta correta\tMédia\r"
-        else:
-            result_string += f"Bloco {block + 1}:\t1ª sequência correta\t 2ª sequência correta\t 3ª sequência correta\t 4ª sequência correta\tMédia\r"
-
-        if individual:
-            list_duration = [[],[],[],[],[],[],[],[],[],[],[],[]]
-        else:
-            list_duration = [[],[],[],[]]
-        reinforce_per_block = 0
-
-        for reinforce in range(10):
-            result_string += f"{last_reinforce}° SR:\t"
-            mean_block_duration = 0
-
-            if f"Reforço: {last_reinforce}" in result.keys():
-                for i in range(len(result[f"Reforço: {last_reinforce}"])):
-                    list_duration[i].append(sum(result[f"Reforço: {last_reinforce}"][i]))
-
-                for i in result[f"Reforço: {last_reinforce}"]:
-                    mean_block_duration += sum(i)
-
-                    result_string += f"{sum(i)}\t"
-                
-                mean_duration = mean_block_duration / len(result[f"Reforço: {last_reinforce}"])
-
-                result_string += f"{mean_duration}"
-                reinforce_per_block += 1
-            
-            result_string += "\r"
-            last_reinforce += 1
+    Args:
+        time_data: String containing time values
         
-        try:
-            if individual:
-                result_string += f"Média:\t{sum(list_duration[0]) / len(list_duration[0])}\t{sum(list_duration[1]) / len(list_duration[1])}\t{sum(list_duration[2]) / len(list_duration[2])}\t{sum(list_duration[3]) / len(list_duration[3])}\t{sum(list_duration[4]) / len(list_duration[4])}\t{sum(list_duration[5]) / len(list_duration[5])}\t{sum(list_duration[6]) / len(list_duration[6])}\t{sum(list_duration[7]) / len(list_duration[7])}\t{sum(list_duration[8]) / len(list_duration[8])}\t{sum(list_duration[9]) / len(list_duration[9])}\t{sum(list_duration[10]) / len(list_duration[10])}\t{sum(list_duration[11]) / len(list_duration[11])}\t{sum(list_duration[0] + list_duration[1] + list_duration[2] + list_duration[3] + list_duration[4] + list_duration[5] + list_duration[6] + list_duration[7] + list_duration[8] + list_duration[9] + list_duration[10] + list_duration[11]) / (len(list_duration[0]) + len(list_duration[1]) + len(list_duration[2]) + len(list_duration[3]) + len(list_duration[4]) + len(list_duration[5]) + len(list_duration[6]) + len(list_duration[7]) + len(list_duration[8]) + len(list_duration[9]) + len(list_duration[10]) + len(list_duration[11]))}\r\r"
-            else:
-                result_string += f"Média:\t{sum(list_duration[0]) / len(list_duration[0])}\t{sum(list_duration[1]) / len(list_duration[1])}\t{sum(list_duration[2]) / len(list_duration[2])}\t{sum(list_duration[3]) / len(list_duration[3])}\t{sum(list_duration[0] + list_duration[1] + list_duration[2] + list_duration[3]) / len(list_duration[0] + list_duration[1] + list_duration[2] + list_duration[3])}\r\r"
+    Returns:
+        List[int]: List of processed time values
+    """
+    processed_data = []
+    for value in time_data:
+        processed_data.append(int(value.split('.')[0]))
+    return processed_data
 
-            session_correct_sequence_time.append(sum(list_duration[0] + list_duration[1] + list_duration[2] + list_duration[3]))
-        except Exception as e:
-            print(str(e))
-            result_string += f"Média:\t0\r\r"
+
+def clear_data(input_string: str) -> List[str]:
+    """
+    Clean and process input string data.
     
-    """Calculating the session mean"""
-            
-    mean_result = {
-        '1': [],
-        '2': [],
-        '3': [],
-        '4': [],
-        '5': [],
-        '6': [],
-        '7': [],
-        '8': [],
-        '9': [],
-        '10': []
-    }
-
-    count_reinforce = 1
-    correct_sequence_number = 0
-
-    for key, value in result.items():
-        """Organizing the data in a dictionary to calculate session resume mean"""
-
-        count_sequence = 0
-
-        for i in value:
-            for j in i:
-                try:
-                    mean_result[str(count_reinforce)][count_sequence].append(j)
-                except IndexError:
-                    mean_result[str(count_reinforce)].append([j])
-            correct_sequence_number += 1
-
-
-            count_sequence += 1
+    Args:
+        input_string: String containing data to be processed
         
-        if count_reinforce == 10:
-            count_reinforce = 1
-        else:
-            count_reinforce += 1
-
-    if individual:
-        result_string += f"\r\rMédias:\t1ª resposta correta\t 2ª resposta correta\t 3ª resposta correta\t 4ª resposta correta\t 5ª resposta correta\t6ª resposta correta\t7ª resposta correta\t8ª resposta correta\t9ª resposta correta\t10ª resposta correta\t11ª resposta correta\t12ª resposta correta\r"
-    else:
-        result_string += f"\r\rMédias:\t1ª Seq Cor\t2ª Seq Cor\t3ª Seq Cor\t4ª Seq Cor\r"
-
-    row_labels = [
-        '1, 11, 21, 31, 41',
-        '2, 12, 22, 32, 42',
-        '3, 13, 23, 33, 43',
-        '4, 14, 24, 34, 44',
-        '5, 15, 25, 35, 45',
-        '6, 16, 26, 36, 46',
-        '7, 17, 27, 37, 47',
-        '8, 18, 28, 38, 48',
-        '9, 19, 29, 39, 49',
-        '10, 20, 30, 40, 50'
-    ]
-
-    final_mean_duration = []
-
-    for i in range(10):
-        """Calculating the mean and writing it in the result string"""
-
-        result_string += f"{row_labels[i]}\t"
-        mean_duration = []
-
-        count = 0
-        final_mean_count = 0
-        correct_sequence = 0
-
-        for j in mean_result[str(i + 1)]:
-            sum_duration = 0
-
-            for k in j:
-                sum_duration += k
-
-                try:
-                    final_mean_duration[final_mean_count].append(k)
-                except IndexError:
-                    final_mean_duration.append([k])
-                
-                mean_duration.append(k)
-                count += 1
-            final_mean_count += 1
-
-            result_string += f"{sum_duration / len(j)}\t"
-
-        try:
-            result_string += f"\tMédia: \t{sum(mean_duration) / count}\r"
-        except ZeroDivisionError:
-            result_string += f"\tMédia: 0\r"
-        
-    result_string += "\rMédia Sessão:\t"
-
-    for i in range(len(final_mean_duration)):
-        result_string += f"{sum(final_mean_duration[i]) / len(final_mean_duration[i])}\t"
+    Returns:
+        List[str]: Cleaned and processed data
+    """
+    row_data = input_string.split()
     
-    result_string += f"\tMédia:\t{sum(session_correct_sequence_time) / correct_sequence_number}\r"
+    # Replace commas with dots
+    if ',' in input_string:
+        row_data = [value.replace(',', '.') for value in row_data]
+    
+    # Remove data if needed
+    if '/' in input_string:
+        row_data = remover_data(row_data)
+    
+    # Remove zero values
+    return [value for value in row_data if value != '0.000']
 
-    if comma:
-        result_string = result_string.replace('.', ',')
 
+def calculate_sequence_time(time_data: str, consequences_data: str, use_comma: bool, individual: bool = False) -> str:
+    """
+    Calculate and format sequence time data based on time and consequences data.
+    
+    Args:
+        time_data: String containing time measurements
+        consequences_data: String containing consequence data
+        use_comma: Whether to use comma as decimal separator
+        individual: Whether to process individual responses (True) or sequences (False)
+        
+    Returns:
+        str: Formatted sequence time data
+    """
+    clipboard = QClipboard()
+    
+    # Process input data
+    processed_time_data = process_time_data(clear_data(time_data))
+    processed_consequences = clear_data(consequences_data)
+    
+    # Initialize data structures
+    reinforcement_number = 1
+    secondary_reinforcement_number = 0
+    result: Dict[str, List[List[int]]] = {}
+    
+    # Process data for each consequence
+    for i in range(len(processed_consequences)):
+        reinforcement_key = f"Reinforcement: {reinforcement_number}"
+        num_responses = 12 if individual else 4
+        
+        if reinforcement_key in result:
+            result[reinforcement_key][secondary_reinforcement_number].append(processed_time_data[i])
+        else:
+            result[reinforcement_key] = [[] for _ in range(num_responses)]
+            result[reinforcement_key][secondary_reinforcement_number].append(processed_time_data[i])
+        
+        # Update reinforcement numbers
+        if processed_consequences[i][0] == '1':
+            reinforcement_number += 1
+            secondary_reinforcement_number = 0
+        elif processed_consequences[i][0] == '2':
+            secondary_reinforcement_number += 1
+    
+    # Generate output
+    output = generate_output(result, individual, use_comma)
+    
     try:
-        cb.setText(result_string)
+        clipboard.setText(output)
         return "Done"
     except:
         return "Error"
 
 
-
-
-def clear_data(string):
-    row_data = string.split()
-    if ',' in string:
-        temp = []
-        for i in row_data:
-            temp.append(i.replace(',', '.'))
-        row_data = temp
-    if '/' in string:
-        row_data = remover_data(row_data)
+def generate_output(result: Dict[str, List[List[int]]], individual: bool, use_comma: bool) -> str:
+    """
+    Generate formatted output string from processed data.
     
-    temp = []
-    for i in row_data:
-        if '0.000' != i:
-            temp.append(i)
+    Args:
+        result: Dictionary containing processed data
+        individual: Whether to process individual responses (True) or sequences (False)
+        use_comma: Whether to use comma as decimal separator
+        
+    Returns:
+        str: Formatted output string
+    """
+    # Initialize output
+    if individual:
+        output = "CORRECT RESPONSE TIME (Time between trial start and correct response)\n\n"
+    else:
+        output = "CORRECT SEQUENCE TIME (Time between trial start and 3rd correct response)\n\n"
+    
+    # Process blocks
+    for block in range(5):
+        output += process_block(block, result, individual, use_comma)
+    
+    # Add session means
+    output += calculate_session_means(result, individual, use_comma)
+    
+    # Format decimal separator if needed
+    if use_comma:
+        output = output.replace('.', ',')
+    
+    return output
 
-    row_data = temp
-    return row_data
+
+def process_block(block: int, result: Dict[str, List[List[int]]], individual: bool, use_comma: bool) -> str:
+    """
+    Process a single block of data.
+    
+    Args:
+        block: Block number
+        result: Dictionary containing processed data
+        individual: Whether to process individual responses (True) or sequences (False)
+        use_comma: Whether to use comma as decimal separator
+        
+    Returns:
+        str: Formatted block data
+    """
+    output = f"Block {block + 1}:\t"
+    num_responses = 12 if individual else 4
+    
+    # Add response headers
+    for i in range(num_responses):
+        output += f"{i+1}ª {'response' if individual else 'sequence'} correct\t"
+    output += "Mean\n"
+    
+    # Process each reinforcement
+    for reinforcement in range(1, 11):
+        output += f"{reinforcement}° SR:\t"
+        reinforcement_key = f"Reinforcement: {reinforcement}"
+        
+        if reinforcement_key in result:
+            total = 0
+            count = 0
+            for response in result[reinforcement_key]:
+                if response:
+                    total += sum(response)
+                    count += 1
+                    output += f"{sum(response)}\t"
+                else:
+                    output += "0\t"
+            
+            if count > 0:
+                output += f"{total/count}\n"
+            else:
+                output += "0\n"
+        else:
+            output += "0\t" * (num_responses + 1) + "\n"
+    
+    return output
+
+
+def calculate_session_means(result: Dict[str, List[List[int]]], individual: bool, use_comma: bool) -> str:
+    """
+    Calculate and format session means.
+    
+    Args:
+        result: Dictionary containing processed data
+        individual: Whether to process individual responses (True) or sequences (False)
+        use_comma: Whether to use comma as decimal separator
+        
+    Returns:
+        str: Formatted session means
+    """
+    output = "\nSession Means:\t"
+    num_responses = 12 if individual else 4
+    
+    # Calculate means for each response position
+    for i in range(num_responses):
+        total = 0
+        count = 0
+        for reinforcement in result.values():
+            if i < len(reinforcement) and reinforcement[i]:
+                total += sum(reinforcement[i])
+                count += len(reinforcement[i])
+        
+        if count > 0:
+            output += f"{total/count}\t"
+        else:
+            output += "0\t"
+    
+    return output
