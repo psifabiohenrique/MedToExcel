@@ -1,4 +1,4 @@
-from typing import Dict, List, Union, Tuple
+from typing import Dict, List
 from PySide6.QtGui import QClipboard
 from med_to_excel.core.utils.recorrence import remover_data
 
