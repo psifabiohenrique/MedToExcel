@@ -12,7 +12,6 @@ from PySide6.QtWidgets import (
 )
 
 from med_to_excel.gui.widgets.selector import Selector
-from med_to_excel.core.utils.copy import calc_row
 from med_to_excel.core.utils.percentage_correct_sequences import (
     calc_percentage_correct_sequences,
 )
@@ -20,9 +19,6 @@ from med_to_excel.core.utils.latency import calc_primary_latency
 from med_to_excel.core.utils.duration import calc_primary_duration
 from med_to_excel.core.utils.trial_duration import (
     calc_primary_trial_duration_or_individual_latency,
-)
-from med_to_excel.core.utils.correct_sequence_time import (
-    calc_correct_sequence_time,
 )
 from med_to_excel.core.utils.error_log import set_errors
 

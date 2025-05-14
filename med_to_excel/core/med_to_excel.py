@@ -2,7 +2,7 @@ from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QMainWindow, QPushButton, QWidget, QGridLayout, QCheckBox, QHBoxLayout
 
 from med_to_excel.gui.widgets.selector import Selector
-from med_to_excel.core.utils.copy import calc
+
 
 class MedToExcel(QWidget):
     def __init__(self) -> None:

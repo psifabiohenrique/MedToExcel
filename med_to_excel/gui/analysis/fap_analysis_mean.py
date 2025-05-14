@@ -12,7 +12,6 @@ from PySide6.QtWidgets import (
 )
 
 from med_to_excel.gui.widgets.selector import Selector
-from med_to_excel.core.utils.copy import calc_row
 from med_to_excel.core.utils.mean_fap_analysis import (
     calc_latency,
     calc_sequence_duration,
