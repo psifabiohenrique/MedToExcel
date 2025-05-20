@@ -2,7 +2,7 @@
 
 <!-- Imagem de capa do projeto -->
 <!-- Substitua 'capa.png' por uma imagem que represente visualmente o projeto, como o logo do laboratório, uma montagem das caixas experimentais ou uma tela inicial do software. -->
-![Imagem de capa do MedToExcel](docs/imagens/capa.png)
+![Imagem de capa do MedToExcel](docs/images/icon.png)
 
 MedToExcel é uma interface gráfica desenvolvida para facilitar a análise de dados de experimentos comportamentais realizados em laboratórios de psicologia, especialmente aqueles que utilizam o sistema MedPC para controle de caixas experimentais com ratos ou pombos.
 
@@ -12,7 +12,7 @@ O aplicativo permite extrair, organizar e analisar dados de arquivos gerados pel
 
 <!-- Imagem ilustrativa do fluxo principal -->
 <!-- Crie uma imagem (ex: fluxograma) mostrando o fluxo de uso do software: importação do arquivo MedPC, seleção de análise, exportação dos resultados. Pode ser um diagrama simples ou um print com setas explicativas. -->
-![Fluxo principal do MedToExcel](docs/imagens/fluxo_principal.png)
+![Fluxo principal do MedToExcel](docs/images/fluxo_principal.png)
 
 ## Principais Funcionalidades
 
@@ -24,7 +24,7 @@ O aplicativo permite extrair, organizar e analisar dados de arquivos gerados pel
 
 <!-- Imagem ilustrativa da interface -->
 <!-- Capture uma screenshot da interface principal do MedToExcel, mostrando os botões e opções disponíveis. Se possível, destaque as áreas principais com caixas ou setas. -->
-![Interface gráfica do MedToExcel](docs/imagens/interface.png)
+![Interface gráfica do MedToExcel](docs/images/Med_to_excel.png)
 
 ## Instalação
 
@@ -53,7 +53,7 @@ Este projeto utiliza o [Poetry](https://python-poetry.org/) para gerenciamento d
 
 <!-- Imagem ilustrativa de uso -->
 <!-- Capture um exemplo de uso real: por exemplo, um print mostrando um arquivo sendo selecionado, ou o resultado de uma análise sendo exibido/exportado. Pode ser uma sequência de imagens ou uma montagem. -->
-![Exemplo de uso do MedToExcel](docs/imagens/exemplo_uso.png)
+![Exemplo de uso do MedToExcel](docs/images/variability.png)
 
 ### Fluxo Básico de Trabalho
 
