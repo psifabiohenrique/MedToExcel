@@ -1,7 +1,6 @@
 from PySide6.QtGui import QClipboard
 import openpyxl
 import statistics
-import math
 from med_to_excel.core.utils.recorrence import remover_data
 from med_to_excel.core.utils.error_log import set_errors, SEQUENCE_RESPONSE_ERROR
 
@@ -47,7 +46,6 @@ def separate_data(time_data):
         return (all_latency, all_f2s, all_s2t)
 
 def calc_latency(time_data, consequence_data, individual, name):
-    cb = QClipboard()
     row_time_data = clear_data(time_data)
     row_consequence_data = clear_data(consequence_data)
 
@@ -292,7 +290,6 @@ def calc_latency(time_data, consequence_data, individual, name):
 
 
 def calc_sequence_duration(time_data, consequence_data, name):
-    cb = QClipboard()
     row_time_data = clear_data(time_data)
     row_consequence_data = clear_data(consequence_data)
 
@@ -364,7 +361,6 @@ def calc_sequence_duration(time_data, consequence_data, name):
     wb.save(f"./planilhas/{name}.xlsx")
 
 def calc_trial_duration(time_data, consequence_data, individual, name):
-    cb = QClipboard()
     row_time_data = clear_data(time_data)
     row_consequence_data = clear_data(consequence_data)
 

@@ -15,12 +15,14 @@ from med_to_excel.gui.widgets.selector import Selector
 from med_to_excel.core.utils.percentage_correct_sequences import (
     calc_percentage_correct_sequences,
 )
+from med_to_excel.core.utils.copy import process_row_data
 from med_to_excel.core.utils.latency import calc_primary_latency
 from med_to_excel.core.utils.duration import calc_primary_duration
 from med_to_excel.core.utils.trial_duration import (
     calc_primary_trial_duration_or_individual_latency,
 )
 from med_to_excel.core.utils.error_log import set_errors
+from med_to_excel.core.utils.correct_sequence_time import calc_correct_sequence_time
 
 
 # Tipos personalizados para melhor documentação
@@ -169,9 +171,9 @@ class Program_choice(QWidget):
         """
         self.archive = open(self.mpc_selector.file_path)
         self.sieve_time = open(time_file)
-        self.value_time = calc_row(self.archive, self.sieve_time, False, False)
+        self.value_time = process_row_data(self.archive, self.sieve_time, False, False)
         self.sieve_consequences = open(consequences_file)
-        self.value_consequences = calc_row(
+        self.value_consequences = process_row_data(
             self.archive, self.sieve_consequences, False, False
         )
         return self.value_time, self.value_consequences
@@ -224,7 +226,7 @@ class Program_choice(QWidget):
                     )
             elif self.program == Constant.PERCENTAGE:
                 self.sieve_consequences = open("./src/consequences.txt")
-                self.value_consequences = calc_row(
+                self.value_consequences = process_row_data(
                     self.archive, self.sieve_consequences, False, False
                 )
                 calc_percentage_correct_sequences(self.value_consequences, comma)

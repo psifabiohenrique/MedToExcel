@@ -40,7 +40,6 @@ def process_row_data(archive: TextIO, sieve: TextIO, is_column: bool, use_comma:
     Returns:
         str: Formatted output string
     """
-    clipboard = QClipboard()
     sieve_list = []
     row_data = _create_index_dict()
     column_indexes = _get_column_indexes()
@@ -132,6 +131,6 @@ def copy_to_clipboard(archive: TextIO, sieve: TextIO, is_column: bool, use_comma
     try:
         clipboard.setText(data)
         return "Done"
-    except:
+    except:  # noqa: E722
         return "Error"
     

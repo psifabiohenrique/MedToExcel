@@ -1,4 +1,4 @@
-from typing import List, Tuple, Optional, Union, Literal
+from typing import List, Tuple, Union, Literal
 from pathlib import Path
 
 from PySide6.QtWidgets import (
@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (
     QFrame,
 )
 
+from med_to_excel.core.utils.copy import process_row_data
 from med_to_excel.gui.widgets.selector import Selector
 from med_to_excel.core.utils.mean_fap_analysis import (
     calc_latency,
@@ -48,9 +49,7 @@ class BaseAnalysisWidget(QWidget):
         self.mpc_selector: Selector = Selector(".MPC")
         self.mpc_layout.layout.addWidget(self.mpc_selector)
 
-        self.individual_response_checkbox: QCheckBox = QCheckBox(
-            "Individual Response"
-        )
+        self.individual_response_checkbox: QCheckBox = QCheckBox("Individual Response")
         self.mpc_layout.layout.addWidget(self.individual_response_checkbox)
 
         self.layout().addWidget(self.mpc_layout)
@@ -73,9 +72,9 @@ class BaseAnalysisWidget(QWidget):
         """
         self.archive = open(self.mpc_selector.file_path)
         self.sieve_time = open(time_file)
-        self.value_time = calc_row(self.archive, self.sieve_time, False, False)
+        self.value_time = process_row_data(self.archive, self.sieve_time, False, False)
         self.sieve_consequences = open(consequences_file)
-        self.value_consequences = calc_row(
+        self.value_consequences = process_row_data(
             self.archive, self.sieve_consequences, False, False
         )
         return self.value_time, self.value_consequences
@@ -98,9 +97,7 @@ class FAP_analysis_mean(QWidget):
         self.mpc_selector: Selector = Selector(".MPC")
         self.mpc_layout.layout.addWidget(self.mpc_selector)
 
-        self.individual_response_checkbox: QCheckBox = QCheckBox(
-            "Individual Response"
-        )
+        self.individual_response_checkbox: QCheckBox = QCheckBox("Individual Response")
         self.mpc_layout.layout.addWidget(self.individual_response_checkbox)
 
         self.layout.addWidget(self.mpc_layout)
@@ -226,9 +223,9 @@ class Program_choice(QWidget):
         """
         self.archive = open(self.mpc_selector.file_path)
         self.sieve_time = open(time_file)
-        self.value_time = calc_row(self.archive, self.sieve_time, False, False)
+        self.value_time = process_row_data(self.archive, self.sieve_time, False, False)
         self.sieve_consequences = open(consequences_file)
-        self.value_consequences = calc_row(
+        self.value_consequences = process_row_data(
             self.archive, self.sieve_consequences, False, False
         )
         return self.value_time, self.value_consequences
