@@ -28,22 +28,29 @@ O aplicativo permite extrair, organizar e analisar dados de arquivos gerados pel
 
 ## Instalação
 
-Este projeto utiliza o [Poetry](https://python-poetry.org/) para gerenciamento de dependências.
+Este projeto utiliza o [uv](https://github.com/astral-sh/uv) para gerenciamento de dependências.
 
-1. Certifique-se de ter o Poetry instalado:
+1. Certifique-se de ter o uv instalado:
    ```bash
-   pipx install poetry
+   pip install uv
    ```
-2. Instale as dependências do projeto:
+
+2. Clone o repositório e navegue até a pasta:
    ```bash
-   poetry install
+   git clone https://github.com/seu-usuario/MedToExcel.git
+   cd MedToExcel
+   ```
+
+3. Instale as dependências do projeto:
+   ```bash
+   uv sync
    ```
 
 ## Como Usar
 
 1. Execute o aplicativo:
    ```bash
-   poetry run python main.py
+   uv run python main.py
    ```
 2. A janela principal exibirá as opções:
    - **Med to Excel**: Extração e organização de dados MedPC.
